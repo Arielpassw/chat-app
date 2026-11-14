@@ -1,0 +1,179 @@
+.login-content {
+  --background: #f5f7fb;
+}
+
+.login-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 24px;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+/* ---------- LOGO ---------- */
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo-circle {
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 24px;
+
+  background: linear-gradient(
+    135deg,
+    #5b5ce2,
+    #7b61ff
+  );
+
+  box-shadow: 0 12px 30px rgba(91, 92, 226, 0.25);
+}
+
+.logo-circle ion-icon {
+  font-size: 42px;
+  color: #ffffff;
+}
+
+.logo-section h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 800;
+  color: #1d1d2c;
+}
+
+.logo-section p {
+  margin: 10px 0 0;
+  color: #77788a;
+  font-size: 15px;
+}
+
+/* ---------- FORMULARIO ---------- */
+
+.form-section {
+  width: 100%;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+/* Icono izquierdo */
+
+.input-group > ion-icon {
+  position: absolute;
+  left: 15px;
+  z-index: 5;
+
+  font-size: 20px;
+  color: #5b5ce2;
+}
+
+/* Input */
+
+.input-group ion-input {
+  width: 100%;
+
+  --background: #ffffff;
+  --color: #1d1d2c;
+
+  --border-color: #d9d9e6;
+  --border-width: 1px;
+  --border-style: solid;
+  --border-radius: 14px;
+
+  --highlight-color-focused: #5b5ce2;
+
+  --padding-start: 48px;
+  --padding-end: 48px;
+
+  --placeholder-color: #9a9aaa;
+  --placeholder-opacity: 1;
+}
+
+/* Color del texto de la etiqueta */
+
+.input-group ion-input::part(label) {
+  color: #77788a;
+}
+
+/* Cuando el input recibe el foco */
+
+.input-group ion-input.has-focus {
+  --border-color: #5b5ce2;
+}
+
+/* ---------- BOTÓN MOSTRAR PASSWORD ---------- */
+
+.password-button {
+  position: absolute;
+  right: 2px;
+  z-index: 10;
+
+  --color: #77788a;
+  --background: transparent;
+
+  margin: 0;
+}
+
+/* ---------- ERROR ---------- */
+
+.error-message {
+  margin: 4px 4px 12px;
+  font-size: 14px;
+}
+
+/* ---------- BOTÓN LOGIN ---------- */
+
+.login-button {
+  --background: #5b5ce2;
+  --background-hover: #4d4ecf;
+  --background-activated: #4d4ecf;
+
+  --border-radius: 14px;
+
+  height: 52px;
+  margin-top: 10px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  box-shadow: 0 8px 20px rgba(91, 92, 226, 0.20);
+}
+
+.login-button ion-spinner {
+  width: 22px;
+  height: 22px;
+}
+
+/* ---------- REGISTRO ---------- */
+
+.register-section {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.register-section p {
+  display: inline;
+  color: #77788a;
+  font-size: 14px;
+}
+
+.register-button {
+  --color: #5b5ce2;
+
+  font-weight: 700;
+  font-size: 14px;
+}

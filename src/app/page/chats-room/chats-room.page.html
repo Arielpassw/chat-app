@@ -1,13 +1,92 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>chats-room</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">chats-room</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="room-content">
+
+  <div class="room-container">
+
+    <!-- Encabezado -->
+    <div class="room-header">
+
+      <button class="back-button" (click)="volverChats()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+
+      <div class="contact-avatar">
+        {{ contacto.avatar }}
+      </div>
+
+      <div class="contact-info">
+        <h2>{{ contacto.nombre }}</h2>
+
+        <span>
+          <span class="online-dot"></span>
+          {{ contacto.estado }}
+        </span>
+      </div>
+
+      <button class="header-action" (click)="irAContactos()">
+        <ion-icon name="person-outline"></ion-icon>
+      </button>
+
+    </div>
+
+    <!-- Fecha -->
+    <div class="date-divider">
+      <span>Hoy</span>
+    </div>
+
+    <!-- Mensajes -->
+    <div class="messages-container">
+
+      <div
+        *ngFor="let mensaje of mensajes"
+        class="message-row"
+        [class.sent]="mensaje.enviado"
+        [class.received]="!mensaje.enviado">
+
+        <div class="message-bubble">
+
+          <p>{{ mensaje.texto }}</p>
+
+          <span class="message-time">
+            {{ mensaje.hora }}
+
+            <ion-icon
+              *ngIf="mensaje.enviado"
+              name="checkmark-done-outline">
+            </ion-icon>
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Campo para escribir -->
+    <div class="message-input-container">
+
+      <div class="input-box">
+
+        <input
+          type="text"
+          [(ngModel)]="nuevoMensaje"
+          placeholder="Escribe un mensaje..."
+          (keyup.enter)="enviarMensaje()"
+        />
+
+      </div>
+
+      <button
+        class="send-button"
+        (click)="enviarMensaje()"
+        [disabled]="!nuevoMensaje.trim()">
+
+        <ion-icon name="send-outline"></ion-icon>
+
+      </button>
+
+    </div>
+
+  </div>
+
 </ion-content>
