@@ -75,6 +75,6 @@ Thumbs.db
 /blob-report/
 /playwright/.cache/
 
-# Credenciales locales
+# Variables de entorno / credenciales
 /src/environments/environment.ts
 /src/environments/environment.prod.ts

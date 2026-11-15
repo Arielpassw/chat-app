@@ -1,59 +1,148 @@
-
-<ion-content [fullscreen]="true" class="room-content">
+<ion-content
+  [fullscreen]="true"
+  class="room-content">
 
   <div class="room-container">
 
-    <!-- Encabezado -->
+    <!-- ENCABEZADO -->
     <div class="room-header">
 
-      <button class="back-button" (click)="volverChats()">
-        <ion-icon name="arrow-back-outline"></ion-icon>
+      <button
+        class="back-button"
+        (click)="volverChats()">
+
+        <ion-icon
+          name="arrow-back-outline">
+        </ion-icon>
+
       </button>
+
 
       <div class="contact-avatar">
         {{ contacto.avatar }}
       </div>
 
+
       <div class="contact-info">
-        <h2>{{ contacto.nombre }}</h2>
+
+        <h2>
+          {{ contacto.nombre }}
+        </h2>
 
         <span>
           <span class="online-dot"></span>
+
           {{ contacto.estado }}
+
         </span>
+
       </div>
 
-      <button class="header-action" (click)="irAContactos()">
-        <ion-icon name="person-outline"></ion-icon>
+    </div>
+
+
+    <!-- CARGANDO -->
+    <div
+      class="loading-state"
+      *ngIf="cargando">
+
+      <div class="loading-spinner">
+        <ion-icon
+          name="chatbubbles-outline">
+        </ion-icon>
+      </div>
+
+      <p>
+        Cargando conversación...
+      </p>
+
+    </div>
+
+
+    <!-- ERROR -->
+    <div
+      class="error-state"
+      *ngIf="!cargando && error">
+
+      <div class="error-icon">
+
+        <ion-icon
+          name="alert-circle-outline">
+        </ion-icon>
+
+      </div>
+
+      <p>
+        {{ error }}
+      </p>
+
+      <button
+        (click)="cargarMensajes()">
+
+        Intentar nuevamente
+
       </button>
 
     </div>
 
-    <!-- Fecha -->
-    <div class="date-divider">
-      <span>Hoy</span>
-    </div>
 
-    <!-- Mensajes -->
-    <div class="messages-container">
+    <!-- MENSAJES -->
+    <div
+      class="messages-container"
+      *ngIf="!cargando && !error">
 
+
+      <!-- ESTADO VACÍO -->
+      <div
+        class="empty-messages"
+        *ngIf="mensajes.length === 0">
+
+        <div class="empty-icon">
+
+          <ion-icon
+            name="chatbubbles-outline">
+          </ion-icon>
+
+        </div>
+
+        <h2>
+          No hay mensajes
+        </h2>
+
+        <p>
+          Sé el primero en enviar un mensaje.
+        </p>
+
+      </div>
+
+
+      <!-- LISTA DE MENSAJES -->
       <div
         *ngFor="let mensaje of mensajes"
         class="message-row"
-        [class.sent]="mensaje.enviado"
-        [class.received]="!mensaje.enviado">
+        [class.sent]="esMensajeMio(mensaje)"
+        [class.received]="!esMensajeMio(mensaje)">
+
 
         <div class="message-bubble">
 
-          <p>{{ mensaje.texto }}</p>
+          <p
+            *ngIf="mensaje.contenido">
+
+            {{ mensaje.contenido }}
+
+          </p>
+
 
           <span class="message-time">
-            {{ mensaje.hora }}
+
+            {{ obtenerHora(mensaje.creado_en) }}
 
             <ion-icon
-              *ngIf="mensaje.enviado"
+              *ngIf="esMensajeMio(mensaje)"
               name="checkmark-done-outline">
             </ion-icon>
+
           </span>
 
         </div>
@@ -62,8 +151,12 @@
 
     </div>
 
-    <!-- Campo para escribir -->
-    <div class="message-input-container">
+
+    <!-- CAMPO DE MENSAJE -->
+    <div
+      class="message-input-container"
+      *ngIf="!cargando && !error">
+
 
       <div class="input-box">
 
@@ -71,17 +164,23 @@
           type="text"
           [(ngModel)]="nuevoMensaje"
           placeholder="Escribe un mensaje..."
+          maxlength="1000"
           (keyup.enter)="enviarMensaje()"
         />
 
       </div>
 
+
       <button
         class="send-button"
         (click)="enviarMensaje()"
-        [disabled]="!nuevoMensaje.trim()">
+        [disabled]="!nuevoMensaje.trim() || enviando">
 
-        <ion-icon name="send-outline"></ion-icon>
+        <ion-icon
+          [name]="enviando
+            ? 'hourglass-outline'
+            : 'send-outline'">
+        </ion-icon>
 
       </button>
 
