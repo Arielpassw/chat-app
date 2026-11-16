@@ -1,6 +1,10 @@
 
 import { Injectable } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
+import {
+  Capacitor,
+  PluginListenerHandle
+} from '@capacitor/core';
+
 import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 import { SupabaseService } from './supabase';
 
@@ -9,7 +13,9 @@ import { SupabaseService } from './supabase';
 })
 export class NotificacionesService {
 
-  private escuchandoToken = false;
+  private listenerToken: PluginListenerHandle | null = null;
+  private listenerNotificacion: PluginListenerHandle | null = null;
+  private listenerAccion: PluginListenerHandle | null = null;
 
   constructor(
     private supabaseService: SupabaseService
@@ -17,6 +23,7 @@ export class NotificacionesService {
 
   // Solicitar permiso para recibir notificaciones
   async solicitarPermiso(): Promise<boolean> {
+
     if (Capacitor.getPlatform() !== 'android') {
       return false;
     }
@@ -32,94 +39,74 @@ export class NotificacionesService {
     return resultado.receive === 'granted';
   }
 
-  // Guardar el token FCM en Supabase
-  async guardarTokenEnSupabase(token: string): Promise<void> {
-    const supabase = this.supabaseService.client;
+  // Obtener el usuario autenticado
+  private async obtenerUsuarioId(): Promise<string> {
 
-    const { data: { user }, error: errorUsuario } =
-      await supabase.auth.getUser();
+    const { data, error } =
+      await this.supabaseService.client.auth.getUser();
 
-    if (errorUsuario || !user) {
+    if (error) throw error;
+
+    if (!data.user) {
       throw new Error('No existe un usuario autenticado en Supabase.');
     }
 
-    const { error } = await supabase
+    return data.user.id;
+  }
+
+  // Guardar el token FCM en Supabase
+  async guardarTokenEnSupabase(token: string): Promise<void> {
+
+    const usuarioId = await this.obtenerUsuarioId();
+
+    const { error } = await this.supabaseService.client
       .from('fcm_tokens')
       .upsert(
         {
-          user_id: user.id,
+          user_id: usuarioId,
           token: token,
-          plataforma: Capacitor.getPlatform()
+          plataforma: Capacitor.getPlatform(),
+          actualizado_en: new Date().toISOString()
         },
         {
           onConflict: 'token'
         }
       );
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
-    console.log('Token FCM guardado correctamente en Supabase.');
+    console.log('Token FCM registrado en Supabase.');
   }
 
-  // Obtener el token y registrarlo
-  async registrarDispositivo(): Promise<string | null> {
-    try {
-      const permiso = await this.solicitarPermiso();
-
-      if (!permiso) {
-        console.log('Permiso de notificaciones denegado.');
-        return null;
-      }
-
-      // Escuchar primero los cambios del token
-      await this.escucharCambiosToken();
-
-      // Obtener token actual
-      const resultado = await FirebaseMessaging.getToken();
-
-      const token = resultado.token;
-
-      console.log('Token FCM obtenido:', token);
-
-      // Guardarlo en Supabase
-      await this.guardarTokenEnSupabase(token);
-
-      return token;
-
-    } catch (error) {
-      console.error('Error registrando dispositivo:', error);
-      return null;
-    }
-  }
-
-  // Detectar si Firebase genera un nuevo token
+  // Escuchar cambios del token FCM
   async escucharCambiosToken(): Promise<void> {
-    if (this.escuchandoToken) {
+
+    if (this.listenerToken) {
       return;
     }
 
-    await FirebaseMessaging.addListener(
+    this.listenerToken = await FirebaseMessaging.addListener(
       'tokenReceived',
       async (evento) => {
+
         try {
-          console.log('Nuevo token FCM recibido.');
-
           await this.guardarTokenEnSupabase(evento.token);
-
+          console.log('Token FCM actualizado.');
         } catch (error) {
-          console.error('Error actualizando token:', error);
+          console.error('Error actualizando token FCM:', error);
         }
       }
     );
-
-    this.escuchandoToken = true;
   }
 
   // Escuchar notificaciones recibidas
   async escucharNotificaciones(): Promise<void> {
-    await FirebaseMessaging.addListener(
+
+    if (this.listenerNotificacion) {
+      return;
+    }
+
+    this.listenerNotificacion = await FirebaseMessaging.addListener(
       'notificationReceived',
       (evento) => {
         console.log('Notificación recibida:', evento.notification);
@@ -127,9 +114,14 @@ export class NotificacionesService {
     );
   }
 
-  // Escuchar cuando se toca una notificación
+  // Escuchar cuando el usuario toca una notificación
   async escucharAccionesNotificacion(): Promise<void> {
-    await FirebaseMessaging.addListener(
+
+    if (this.listenerAccion) {
+      return;
+    }
+
+    this.listenerAccion = await FirebaseMessaging.addListener(
       'notificationActionPerformed',
       (evento) => {
         console.log('Notificación seleccionada:', evento.notification);
@@ -137,14 +129,39 @@ export class NotificacionesService {
     );
   }
 
-  // Obtener un token FCM real para pruebas en Android
-  async obtenerTokenDispositivo(): Promise<string | null> {
+  // Registrar dispositivo y configurar listeners
+  async registrarDispositivo(): Promise<string | null> {
+
     try {
-      if (Capacitor.getPlatform() !== 'android') {
-        console.log('Esta prueba debe ejecutarse en Android.');
+      const permiso = await this.solicitarPermiso();
+
+      if (!permiso) {
+        console.log('Permiso de notificaciones denegado.');
         return null;
       }
 
+      await this.escucharCambiosToken();
+      await this.escucharNotificaciones();
+      await this.escucharAccionesNotificacion();
+
+      const resultado = await FirebaseMessaging.getToken();
+
+      await this.guardarTokenEnSupabase(resultado.token);
+
+      console.log('Dispositivo registrado correctamente.');
+
+      return resultado.token;
+
+    } catch (error) {
+      console.error('Error registrando dispositivo:', error);
+      return null;
+    }
+  }
+
+  // Obtener token FCM para pruebas
+  async obtenerTokenDispositivo(): Promise<string | null> {
+
+    try {
       const permiso = await this.solicitarPermiso();
 
       if (!permiso) {
@@ -154,13 +171,31 @@ export class NotificacionesService {
 
       const resultado = await FirebaseMessaging.getToken();
 
-      console.log('TOKEN FCM REAL:', resultado.token);
-
       return resultado.token;
 
     } catch (error) {
       console.error('Error obteniendo token FCM:', error);
       return null;
     }
+  }
+
+  // Retirar todos los listeners
+  async detenerEscuchas(): Promise<void> {
+
+    const listeners = [
+      this.listenerToken,
+      this.listenerNotificacion,
+      this.listenerAccion
+    ];
+
+    for (const listener of listeners) {
+      if (listener) {
+        await listener.remove();
+      }
+    }
+
+    this.listenerToken = null;
+    this.listenerNotificacion = null;
+    this.listenerAccion = null;
   }
 }

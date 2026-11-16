@@ -32,40 +32,27 @@ export class SalaService {
     return data.user.id;
   }
 
-  // Crear una sala individual o grupal
-  async crearSala(datos: CrearSala): Promise<Sala> {
-    const usuarioId = await this.obtenerUsuarioId();
 
-    const { data: sala, error } =
+  // Crear una sala individual o grupal mediante RPC
+  async crearSala(datos: CrearSala): Promise<Sala> {
+    if (!['individual', 'grupal'].includes(datos.tipo)) {
+      throw new Error('El tipo de sala no es válido.');
+    }
+
+    const { data, error } =
       await this.supabaseService.client
-        .from('chats')
-        .insert({
-          nombre: datos.nombre ?? null,
-          tipo: datos.tipo,
-          imagen_url: datos.imagen_url ?? null,
-          creado_por: usuarioId
+        .rpc('crear_sala_transaccional', {
+          p_nombre: datos.nombre ?? null,
+          p_tipo: datos.tipo,
+          p_imagen_url: datos.imagen_url ?? null
         })
-        .select()
         .single();
 
     if (error) throw error;
 
-    // Agregar al creador como administrador
-    const { error: errorParticipante } =
-      await this.supabaseService.client
-        .from('chat_participants')
-        .insert({
-          chat_id: sala.id,
-          user_id: usuarioId,
-          rol: 'administrador'
-        });
-
-    if (errorParticipante) {
-      throw errorParticipante;
-    }
-
-    return sala as Sala;
+    return data as Sala;
   }
+
 
   // Agregar participantes a una sala
   async agregarParticipantes(

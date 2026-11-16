@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import { SupabaseService } from './supabase';
 
@@ -12,13 +13,18 @@ export class StorageService {
   private readonly MAX_AVATAR = 5 * 1024 * 1024;
   private readonly MAX_ARCHIVO = 20 * 1024 * 1024;
 
+  private readonly TIPOS_AVATAR = [
+    'image/jpeg',
+    'image/png',
+    'image/webp'
+  ];
+
   constructor(
     private supabaseService: SupabaseService
   ) {}
 
   // Obtener el ID del usuario autenticado
   private async obtenerUsuarioId(): Promise<string> {
-
     const { data, error } =
       await this.supabaseService.client.auth.getUser();
 
@@ -33,11 +39,19 @@ export class StorageService {
 
   // Limpiar el nombre del archivo
   private limpiarNombre(nombre: string): string {
-
-    return nombre
+    const nombreLimpio = nombre
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-zA-Z0-9._-]/g, '_');
+
+    return nombreLimpio || 'archivo';
+  }
+
+  // Validar que el archivo tenga contenido
+  private validarArchivo(archivo: File): void {
+    if (!archivo || archivo.size <= 0) {
+      throw new Error('El archivo está vacío o no es válido.');
+    }
   }
 
   // Subir foto de perfil
@@ -45,18 +59,21 @@ export class StorageService {
     path: string;
     url: string;
   }> {
+    this.validarArchivo(archivo);
 
     const usuarioId = await this.obtenerUsuarioId();
 
-    if (!archivo.type.startsWith('image/')) {
-      throw new Error('El archivo debe ser una imagen.');
+    if (!this.TIPOS_AVATAR.includes(archivo.type)) {
+      throw new Error('Solo se permiten imágenes JPEG, PNG o WebP.');
     }
 
     if (archivo.size > this.MAX_AVATAR) {
       throw new Error('La imagen no puede superar los 5 MB.');
     }
 
-    const nombre = `${Date.now()}-${this.limpiarNombre(archivo.name)}`;
+    const nombre =
+      `${Date.now()}-${this.limpiarNombre(archivo.name)}`;
+
     const path = `${usuarioId}/${nombre}`;
 
     const { data, error } =
@@ -91,6 +108,11 @@ export class StorageService {
     tamano: number;
     tipo: string;
   }> {
+    this.validarArchivo(archivo);
+
+    if (!chatId || !chatId.trim()) {
+      throw new Error('El ID de la conversación es obligatorio.');
+    }
 
     const usuarioId = await this.obtenerUsuarioId();
 
@@ -98,9 +120,12 @@ export class StorageService {
       throw new Error('El archivo no puede superar los 20 MB.');
     }
 
-    const nombre = `${Date.now()}-${this.limpiarNombre(archivo.name)}`;
+    const nombre =
+      `${Date.now()}-${this.limpiarNombre(archivo.name)}`;
 
     const path = `${chatId}/${usuarioId}/${nombre}`;
+
+    const tipo = archivo.type || 'application/octet-stream';
 
     const { data, error } =
       await this.supabaseService.client.storage
@@ -108,7 +133,7 @@ export class StorageService {
         .upload(path, archivo, {
           cacheControl: '3600',
           upsert: false,
-          contentType: archivo.type || 'application/octet-stream'
+          contentType: tipo
         });
 
     if (error) throw error;
@@ -117,7 +142,7 @@ export class StorageService {
       path: data.path,
       nombre: archivo.name,
       tamano: archivo.size,
-      tipo: archivo.type || 'application/octet-stream'
+      tipo
     };
   }
 
@@ -126,6 +151,13 @@ export class StorageService {
     path: string,
     segundos: number = 3600
   ): Promise<string> {
+    if (!path || !path.trim()) {
+      throw new Error('La ruta del archivo es obligatoria.');
+    }
+
+    if (!Number.isInteger(segundos) || segundos <= 0) {
+      throw new Error('El tiempo de expiración no es válido.');
+    }
 
     const { data, error } =
       await this.supabaseService.client.storage
@@ -139,6 +171,9 @@ export class StorageService {
 
   // Obtener URL pública de un avatar
   obtenerUrlAvatar(path: string): string {
+    if (!path || !path.trim()) {
+      throw new Error('La ruta del avatar es obligatoria.');
+    }
 
     const { data } =
       this.supabaseService.client.storage
@@ -150,6 +185,9 @@ export class StorageService {
 
   // Eliminar foto de perfil
   async eliminarAvatar(path: string): Promise<void> {
+    if (!path || !path.trim()) {
+      throw new Error('La ruta del avatar es obligatoria.');
+    }
 
     const { error } =
       await this.supabaseService.client.storage
@@ -161,6 +199,9 @@ export class StorageService {
 
   // Eliminar archivo de una conversación
   async eliminarArchivoChat(path: string): Promise<void> {
+    if (!path || !path.trim()) {
+      throw new Error('La ruta del archivo es obligatoria.');
+    }
 
     const { error } =
       await this.supabaseService.client.storage
