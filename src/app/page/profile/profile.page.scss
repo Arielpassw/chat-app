@@ -1,0 +1,345 @@
+.profile-content {
+    --background: #f5f7fb;
+}
+
+.profile-container {
+    min-height: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 18px;
+}
+
+/* =========================
+   ENCABEZADO
+========================= */
+
+.top-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.back-button {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 13px;
+    background: #ffffff;
+    color: #344054;
+    font-size: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-title {
+    flex: 1;
+    text-align: center;
+}
+
+.page-title span {
+    color: #7c8798;
+    font-size: 12px;
+}
+
+.page-title h1 {
+    color: #202b3c;
+    font-size: 25px;
+    margin: 3px 0 0;
+    font-weight: 750;
+}
+
+.top-spacer {
+    width: 42px;
+}
+
+/* =========================
+   TARJETA DE PERFIL
+========================= */
+
+.profile-card {
+    background: #ffffff;
+    border: 1px solid #edf0f5;
+    border-radius: 20px;
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.avatar-large {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 14px;
+
+    border-radius: 50%;
+
+    background: #e9edff;
+    color: #5365c9;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+    font-weight: 750;
+
+    border: 4px solid #ffffff;
+    box-shadow: 0 5px 18px rgba(50, 60, 100, 0.08);
+}
+
+.profile-card h2 {
+    margin: 0 0 4px;
+    color: #202b3c;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.profile-card p {
+    margin: 0 0 12px;
+    color: #8993a4;
+    font-size: 13px;
+}
+
+.account-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    background: #edf9f1;
+    color: #23824b;
+
+    border-radius: 20px;
+    padding: 6px 10px;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+}
+
+/* =========================
+   TÍTULO DE SECCIÓN
+========================= */
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.section-title h2 {
+    margin: 0;
+    color: #202b3c;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.section-title button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    border: none;
+    background: transparent;
+
+    color: #5365c9;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* =========================
+   INFORMACIÓN PERSONAL
+========================= */
+
+.information-card {
+    background: #ffffff;
+    border: 1px solid #edf0f5;
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 16px;
+
+    border-bottom: 1px solid #edf0f5;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+
+    border-radius: 11px;
+
+    background: #f0f2ff;
+    color: #5365c9;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+}
+
+.info-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.info-content span {
+    display: block;
+    color: #8993a4;
+    font-size: 10px;
+    margin-bottom: 4px;
+}
+
+.info-content p {
+    margin: 0;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 500;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.info-content input {
+    width: 100%;
+
+    border: none;
+    border-bottom: 1px solid #d8ddea;
+
+    outline: none;
+
+    background: transparent;
+
+    color: #344054;
+
+    font-size: 13px;
+
+    padding: 3px 0;
+}
+
+.info-content input:focus {
+    border-bottom-color: #5365c9;
+}
+
+/* =========================
+   BOTÓN GUARDAR
+========================= */
+
+.save-button {
+    width: 100%;
+    height: 48px;
+
+    border: none;
+    border-radius: 14px;
+
+    background: #5365c9;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    margin-bottom: 12px;
+}
+
+.save-button ion-icon {
+    font-size: 18px;
+}
+
+/* =========================
+   CERRAR SESIÓN
+========================= */
+
+.logout-button {
+    width: 100%;
+    height: 48px;
+
+    border: 1px solid #f0d5d5;
+    border-radius: 14px;
+
+    background: #ffffff;
+    color: #d64545;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    margin-bottom: 25px;
+}
+
+.logout-button ion-icon {
+    font-size: 18px;
+}
+
+/* =========================
+   EFECTOS
+========================= */
+
+.back-button:active,
+.section-title button:active,
+.save-button:active,
+.logout-button:active {
+    transform: scale(0.97);
+}
+
+.save-button:hover {
+    background: #4658bb;
+}
+
+.logout-button:hover {
+    background: #fff8f8;
+}
+
+/*  RESPONSIVE*/
+
+@media (max-width: 400px) {
+
+    .profile-container {
+        padding: 14px;
+    }
+
+    .profile-card {
+        padding: 24px 16px;
+    }
+
+    .avatar-large {
+        width: 74px;
+        height: 74px;
+        font-size: 21px;
+    }
+
+    .info-row {
+        padding: 14px;
+    }
+
+}

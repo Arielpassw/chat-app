@@ -137,7 +137,6 @@ export class NotificacionesService {
     );
   }
 
-  
   // Obtener un token FCM real para pruebas en Android
   async obtenerTokenDispositivo(): Promise<string | null> {
     try {
@@ -164,5 +163,4 @@ export class NotificacionesService {
       return null;
     }
   }
-
 }

@@ -3,99 +3,99 @@ import { Injectable } from '@angular/core';
 import { SupabaseService } from './supabase';
 
 import {
-    Sala,
-    CrearSala,
-    ParticipanteSala,
-    AgregarParticipante
+  Sala,
+  CrearSala,
+  ParticipanteSala,
+  AgregarParticipante
 } from '../models/sala.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class SalaService {
 
-    constructor(
-        private supabaseService: SupabaseService
-    ) { }
+  constructor(
+    private supabaseService: SupabaseService
+  ) { }
 
-    // Obtener el usuario autenticado
-    private async obtenerUsuarioId(): Promise<string> {
-        const { data, error } =
-            await this.supabaseService.client.auth.getUser();
+  // Obtener el usuario autenticado
+  private async obtenerUsuarioId(): Promise<string> {
+    const { data, error } =
+      await this.supabaseService.client.auth.getUser();
 
-        if (error) throw error;
+    if (error) throw error;
 
-        if (!data.user) {
-            throw new Error('No existe un usuario autenticado.');
-        }
-
-        return data.user.id;
+    if (!data.user) {
+      throw new Error('No existe un usuario autenticado.');
     }
 
-    // Crear una sala individual o grupal
-    async crearSala(datos: CrearSala): Promise<Sala> {
-        const usuarioId = await this.obtenerUsuarioId();
+    return data.user.id;
+  }
 
-        const { data: sala, error } =
-            await this.supabaseService.client
-                .from('chats')
-                .insert({
-                    nombre: datos.nombre ?? null,
-                    tipo: datos.tipo,
-                    imagen_url: datos.imagen_url ?? null,
-                    creado_por: usuarioId
-                })
-                .select()
-                .single();
+  // Crear una sala individual o grupal
+  async crearSala(datos: CrearSala): Promise<Sala> {
+    const usuarioId = await this.obtenerUsuarioId();
 
-        if (error) throw error;
+    const { data: sala, error } =
+      await this.supabaseService.client
+        .from('chats')
+        .insert({
+          nombre: datos.nombre ?? null,
+          tipo: datos.tipo,
+          imagen_url: datos.imagen_url ?? null,
+          creado_por: usuarioId
+        })
+        .select()
+        .single();
 
-        // Agregar al creador como administrador
-        const { error: errorParticipante } =
-            await this.supabaseService.client
-                .from('chat_participants')
-                .insert({
-                    chat_id: sala.id,
-                    user_id: usuarioId,
-                    rol: 'administrador'
-                });
+    if (error) throw error;
 
-        if (errorParticipante) {
-            throw errorParticipante;
-        }
+    // Agregar al creador como administrador
+    const { error: errorParticipante } =
+      await this.supabaseService.client
+        .from('chat_participants')
+        .insert({
+          chat_id: sala.id,
+          user_id: usuarioId,
+          rol: 'administrador'
+        });
 
-        return sala as Sala;
+    if (errorParticipante) {
+      throw errorParticipante;
     }
 
-    // Agregar participantes a una sala
-    async agregarParticipantes(
-        datos: AgregarParticipante[]
-    ): Promise<void> {
+    return sala as Sala;
+  }
 
-        if (datos.length === 0) return;
+  // Agregar participantes a una sala
+  async agregarParticipantes(
+    datos: AgregarParticipante[]
+  ): Promise<void> {
 
-        const participantes = datos.map(participante => ({
-            chat_id: participante.chat_id,
-            user_id: participante.user_id,
-            rol: participante.rol ?? 'miembro'
-        }));
+    if (datos.length === 0) return;
 
-        const { error } =
-            await this.supabaseService.client
-                .from('chat_participants')
-                .insert(participantes);
+    const participantes = datos.map(participante => ({
+      chat_id: participante.chat_id,
+      user_id: participante.user_id,
+      rol: participante.rol ?? 'miembro'
+    }));
 
-        if (error) throw error;
-    }
+    const { error } =
+      await this.supabaseService.client
+        .from('chat_participants')
+        .insert(participantes);
 
-    // Consultar las salas del usuario autenticado
-    async obtenerMisSalas(): Promise<any[]> {
-        const usuarioId = await this.obtenerUsuarioId();
+    if (error) throw error;
+  }
 
-        const { data, error } =
-            await this.supabaseService.client
-                .from('chat_participants')
-                .select(`
+  // Consultar las salas del usuario autenticado
+  async obtenerMisSalas(): Promise<any[]> {
+    const usuarioId = await this.obtenerUsuarioId();
+
+    const { data, error } =
+      await this.supabaseService.client
+        .from('chat_participants')
+        .select(`
           id,
           chat_id,
           user_id,
@@ -104,66 +104,66 @@ export class SalaService {
           ultimo_mensaje_leido,
           chats (*)
         `)
-                .eq('user_id', usuarioId)
-                .order('unido_en', { ascending: false });
+        .eq('user_id', usuarioId)
+        .order('unido_en', { ascending: false });
 
-        if (error) throw error;
+    if (error) throw error;
 
-        return data ?? [];
+    return data ?? [];
+  }
+
+  // Consultar participantes de una sala
+  async obtenerParticipantes(
+    chatId: string
+  ): Promise<ParticipanteSala[]> {
+
+    const { data, error } =
+      await this.supabaseService.client
+        .from('chat_participants')
+        .select('*')
+        .eq('chat_id', chatId)
+        .order('unido_en', { ascending: true });
+
+    if (error) throw error;
+
+    return (data ?? []) as ParticipanteSala[];
+  }
+
+  // Actualizar información de una sala
+  async actualizarSala(
+    chatId: string,
+    datos: {
+      nombre?: string | null;
+      imagen_url?: string | null;
     }
+  ): Promise<void> {
+    const { error } = await this.supabaseService.client
+      .from('chats')
+      .update({
+        ...datos,
+        actualizado_en: new Date().toISOString()
+      })
+      .eq('id', chatId);
 
-    // Consultar participantes de una sala
-    async obtenerParticipantes(
-        chatId: string
-    ): Promise<ParticipanteSala[]> {
+    if (error) throw error;
+  }
 
-        const { data, error } =
-            await this.supabaseService.client
-                .from('chat_participants')
-                .select('*')
-                .eq('chat_id', chatId)
-                .order('unido_en', { ascending: true });
+  // Actualizar la última fecha de lectura
+  async actualizarUltimaLectura(
+    chatId: string
+  ): Promise<void> {
 
-        if (error) throw error;
+    const usuarioId = await this.obtenerUsuarioId();
 
-        return (data ?? []) as ParticipanteSala[];
-    }
+    const { error } =
+      await this.supabaseService.client
+        .from('chat_participants')
+        .update({
+          ultimo_mensaje_leido: new Date().toISOString()
+        })
+        .eq('chat_id', chatId)
+        .eq('user_id', usuarioId);
 
-    // Actualizar información de una sala
-    async actualizarSala(
-        chatId: string,
-        datos: {
-            nombre?: string | null;
-            imagen_url?: string | null;
-        }
-    ): Promise<void> {
-        const { error } = await this.supabaseService.client
-            .from('chats')
-            .update({
-                ...datos,
-                actualizado_en: new Date().toISOString()
-            })
-            .eq('id', chatId);
-
-        if (error) throw error;
-    }
-
-    // Actualizar la última fecha de lectura
-    async actualizarUltimaLectura(
-        chatId: string
-    ): Promise<void> {
-
-        const usuarioId = await this.obtenerUsuarioId();
-
-        const { error } =
-            await this.supabaseService.client
-                .from('chat_participants')
-                .update({
-                    ultimo_mensaje_leido: new Date().toISOString()
-                })
-                .eq('chat_id', chatId)
-                .eq('user_id', usuarioId);
-
-        if (error) throw error;
-    }
+    if (error) throw error;
+  }
 }

@@ -1,13 +1,191 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>chats-room</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content
+  [fullscreen]="true"
+  class="room-content">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">chats-room</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="room-container">
+
+    <!-- ENCABEZADO -->
+    <div class="room-header">
+
+      <button
+        class="back-button"
+        (click)="volverChats()">
+
+        <ion-icon
+          name="arrow-back-outline">
+        </ion-icon>
+
+      </button>
+
+
+      <div class="contact-avatar">
+        {{ contacto.avatar }}
+      </div>
+
+
+      <div class="contact-info">
+
+        <h2>
+          {{ contacto.nombre }}
+        </h2>
+
+        <span>
+          <span class="online-dot"></span>
+
+          {{ contacto.estado }}
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- CARGANDO -->
+    <div
+      class="loading-state"
+      *ngIf="cargando">
+
+      <div class="loading-spinner">
+        <ion-icon
+          name="chatbubbles-outline">
+        </ion-icon>
+      </div>
+
+      <p>
+        Cargando conversación...
+      </p>
+
+    </div>
+
+
+    <!-- ERROR -->
+    <div
+      class="error-state"
+      *ngIf="!cargando && error">
+
+      <div class="error-icon">
+
+        <ion-icon
+          name="alert-circle-outline">
+        </ion-icon>
+
+      </div>
+
+      <p>
+        {{ error }}
+      </p>
+
+      <button
+        (click)="cargarMensajes()">
+
+        Intentar nuevamente
+
+      </button>
+
+    </div>
+
+
+    <!-- MENSAJES -->
+    <div
+      class="messages-container"
+      *ngIf="!cargando && !error">
+
+
+      <!-- ESTADO VACÍO -->
+      <div
+        class="empty-messages"
+        *ngIf="mensajes.length === 0">
+
+        <div class="empty-icon">
+
+          <ion-icon
+            name="chatbubbles-outline">
+          </ion-icon>
+
+        </div>
+
+        <h2>
+          No hay mensajes
+        </h2>
+
+        <p>
+          Sé el primero en enviar un mensaje.
+        </p>
+
+      </div>
+
+
+      <!-- LISTA DE MENSAJES -->
+      <div
+        *ngFor="let mensaje of mensajes"
+        class="message-row"
+        [class.sent]="esMensajeMio(mensaje)"
+        [class.received]="!esMensajeMio(mensaje)">
+
+
+        <div class="message-bubble">
+
+          <p
+            *ngIf="mensaje.contenido">
+
+            {{ mensaje.contenido }}
+
+          </p>
+
+
+          <span class="message-time">
+
+            {{ obtenerHora(mensaje.creado_en) }}
+
+            <ion-icon
+              *ngIf="esMensajeMio(mensaje)"
+              name="checkmark-done-outline">
+            </ion-icon>
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CAMPO DE MENSAJE -->
+    <div
+      class="message-input-container"
+      *ngIf="!cargando && !error">
+
+
+      <div class="input-box">
+
+        <input
+          type="text"
+          [(ngModel)]="nuevoMensaje"
+          placeholder="Escribe un mensaje..."
+          maxlength="1000"
+          (keyup.enter)="enviarMensaje()"
+        />
+
+      </div>
+
+
+      <button
+        class="send-button"
+        (click)="enviarMensaje()"
+        [disabled]="!nuevoMensaje.trim() || enviando">
+
+        <ion-icon
+          [name]="enviando
+            ? 'hourglass-outline'
+            : 'send-outline'">
+        </ion-icon>
+
+      </button>
+
+    </div>
+
+  </div>
+
 </ion-content>

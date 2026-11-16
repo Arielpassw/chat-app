@@ -1,3 +1,4 @@
+
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
@@ -11,7 +12,6 @@ $RECYCLE.BIN/
 
 *.log
 log.txt
-
 
 /.sourcemaps
 /.versions
@@ -52,7 +52,6 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
-
 # Miscellaneous
 /.angular
 /.angular/cache
@@ -74,7 +73,6 @@ Thumbs.db
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-
 
 # Credenciales locales
 /src/environments/environment.ts
