@@ -1,240 +1,72 @@
-<ion-content
-  [fullscreen]="true"
-  class="profile-content">
-
+<ion-content [fullscreen]="true" class="profile-content">
   <div class="profile-container">
-
-    <!-- ENCABEZADO -->
-
     <div class="top-section">
-
-      <button
-        class="back-button"
-        (click)="volverChats()">
-
-        <ion-icon
-          name="arrow-back-outline">
-        </ion-icon>
-
+      <button class="back-button" (click)="volver()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
       </button>
-
       <div class="page-title">
-
         <span>Cuenta</span>
-
         <h1>Mi perfil</h1>
-
       </div>
-
       <div class="top-spacer"></div>
-
     </div>
 
+    <div *ngIf="cargando" class="profile-card">
+      <p>Cargando perfil...</p>
+    </div>
 
-    <!-- PERFIL -->
+    <div *ngIf="!cargando && error" class="profile-card error-card">
+      <p>{{ error }}</p>
+      <button (click)="cargarPerfil()">Intentar nuevamente</button>
+    </div>
 
-    <div class="profile-card">
-
-      <div class="avatar-large">
-
-        {{ usuario.avatar }}
-
+    <ng-container *ngIf="!cargando && usuario">
+      <div class="profile-card">
+        <div class="avatar-large">
+          <img *ngIf="usuario.foto_url" [src]="usuario.foto_url" [alt]="usuario.nombre">
+          <span *ngIf="!usuario.foto_url">{{ obtenerIniciales(usuario.nombre) }}</span>
+        </div>
+        <h2>{{ usuario.nombre }}</h2>
+        <p>{{ usuario.username ? '@' + usuario.username.replace('@','') : 'Sin username' }}</p>
+        <span class="account-status"><span class="status-dot"></span>{{ usuario.estado || 'Disponible' }}</span>
       </div>
 
-      <h2>
-        {{ usuario.nombre }}
-      </h2>
+      <div class="section-title">
+        <h2>Información personal</h2>
+        <button (click)="editar()">
+          <ion-icon name="create-outline"></ion-icon>
+          Editar
+        </button>
+      </div>
 
-      <p>
-        {{ usuario.username }}
-      </p>
+      <div class="information-card">
+        <div class="info-row">
+          <div class="info-icon"><ion-icon name="person-outline"></ion-icon></div>
+          <div class="info-content">
+            <span>Nombre</span>
+            <p>{{ usuario.nombre }}</p>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon"><ion-icon name="person-outline"></ion-icon></div>
+          <div class="info-content">
+            <span>Usuario</span>
+            <p>{{ usuario.username || 'No configurado' }}</p>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-icon"><ion-icon name="mail-outline"></ion-icon></div>
+          <div class="info-content">
+            <span>Correo electrónico</span>
+            <p>{{ usuario.email || 'No disponible' }}</p>
+          </div>
+        </div>
+      </div>
 
-      <span class="account-status">
-
-        <span class="status-dot"></span>
-
-        Cuenta activa
-
-      </span>
-
-    </div>
-
-
-    <!-- INFORMACIÓN -->
-
-    <div class="section-title">
-
-      <h2>
-        Información personal
-      </h2>
-
-      <button
-        *ngIf="!editando"
-        (click)="activarEdicion()">
-
-        <ion-icon
-          name="create-outline">
-        </ion-icon>
-
-        Editar
-
+      <button class="logout-button" (click)="cerrarSesion()">
+        <ion-icon name="log-out-outline"></ion-icon>
+        Cerrar sesión
       </button>
-
-    </div>
-
-
-    <div class="information-card">
-
-      <!-- NOMBRE -->
-
-      <div class="info-row">
-
-        <div class="info-icon">
-
-          <ion-icon
-            name="person-outline">
-          </ion-icon>
-
-        </div>
-
-        <div class="info-content">
-
-          <span>Nombre</span>
-
-          <input
-            *ngIf="editando"
-            type="text"
-            [(ngModel)]="usuario.nombre"
-          />
-
-          <p *ngIf="!editando">
-            {{ usuario.nombre }}
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <!-- USUARIO -->
-
-      <div class="info-row">
-
-        <div class="info-icon">
-
-          <ion-icon
-            name="at-outline">
-          </ion-icon>
-
-        </div>
-
-        <div class="info-content">
-
-          <span>Usuario</span>
-
-          <input
-            *ngIf="editando"
-            type="text"
-            [(ngModel)]="usuario.username"
-          />
-
-          <p *ngIf="!editando">
-            {{ usuario.username }}
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <!-- CORREO -->
-
-      <div class="info-row">
-
-        <div class="info-icon">
-
-          <ion-icon
-            name="mail-outline">
-          </ion-icon>
-
-        </div>
-
-        <div class="info-content">
-
-          <span>Correo electrónico</span>
-
-          <p>
-            {{ usuario.correo }}
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <!-- TELÉFONO -->
-
-      <div class="info-row">
-
-        <div class="info-icon">
-
-          <ion-icon
-            name="call-outline">
-          </ion-icon>
-
-        </div>
-
-        <div class="info-content">
-
-          <span>Teléfono</span>
-
-          <input
-            *ngIf="editando"
-            type="text"
-            [(ngModel)]="usuario.telefono"
-          />
-
-          <p *ngIf="!editando">
-            {{ usuario.telefono }}
-          </p>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- GUARDAR -->
-
-    <button
-      *ngIf="editando"
-      class="save-button"
-      (click)="guardarCambios()">
-
-      <ion-icon
-        name="checkmark-outline">
-      </ion-icon>
-
-      Guardar cambios
-
-    </button>
-
-
-    <!-- CERRAR SESIÓN -->
-
-    <button
-      class="logout-button"
-      (click)="cerrarSesion()">
-
-      <ion-icon
-        name="log-out-outline">
-      </ion-icon>
-
-      Cerrar sesión
-
-    </button>
-
+    </ng-container>
   </div>
-
 </ion-content>

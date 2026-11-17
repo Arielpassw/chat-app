@@ -392,3 +392,6 @@
   color: white;
   margin-top: 10px;
 }
+.new-chat-actions { display:flex; gap:10px; margin-bottom:18px; }
+.new-chat-actions .new-chat-button { flex:1; margin:0; }
+.new-room-button { border:1px solid #e4e9f1; border-radius:15px; background:#fff; color:#5365c9; padding:0 14px; display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; }

@@ -1,0 +1,286 @@
+
+.create-room-content {
+  --background: #f5f7fb;
+}
+
+.create-container {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100%;
+}
+
+/* ENCABEZADO */
+
+.top-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.back-button {
+  width: 43px;
+  height: 43px;
+  border: none;
+  border-radius: 13px;
+  background: #ffffff;
+  color: #344054;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-section span {
+  color: #8993a4;
+  font-size: 12px;
+}
+
+.top-section h1 {
+  color: #202b3c;
+  font-size: 25px;
+  font-weight: 750;
+  margin: 3px 0 0;
+}
+
+/* TARJETAS */
+
+.section-card {
+  background: #ffffff;
+  border: 1px solid #edf0f5;
+  border-radius: 17px;
+  padding: 18px;
+  margin-bottom: 17px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: #5365c9;
+}
+
+.section-title ion-icon {
+  font-size: 21px;
+}
+
+.section-title h2 {
+  color: #202b3c;
+  font-size: 15px;
+  margin: 0;
+  flex: 1;
+}
+
+.counter {
+  background: #e9edff;
+  color: #5365c9;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* FORMULARIO */
+
+.section-card label {
+  display: block;
+  color: #475467;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 9px;
+}
+
+.section-card input {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+  padding: 0 13px;
+  outline: none;
+  background: #ffffff;
+  color: #344054;
+  font-size: 14px;
+}
+
+.section-card input:focus {
+  border-color: #5365c9;
+}
+
+.section-card input::placeholder {
+  color: #a0aaba;
+}
+
+/* BUSCADOR */
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 12px;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+}
+
+.search-box ion-icon {
+  font-size: 19px;
+  color: #8993a4;
+}
+
+.search-box input {
+  border: none;
+  padding: 0;
+  height: 100%;
+}
+
+.search-box input:focus {
+  border: none;
+}
+
+/* CONTACTOS */
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px;
+  border: 1px solid #edf0f5;
+  border-radius: 13px;
+}
+
+.avatar {
+  width: 43px;
+  height: 43px;
+  min-width: 43px;
+  border-radius: 50%;
+  background: #e9edff;
+  color: #5365c9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-info h3 {
+  margin: 0 0 4px;
+  color: #202b3c;
+  font-size: 14px;
+}
+
+.contact-info p {
+  margin: 0;
+  color: #8993a4;
+  font-size: 12px;
+}
+
+.select-button,
+.remove-button {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+}
+
+.select-button {
+  background: #f0f2f8;
+  color: #5365c9;
+}
+
+.select-button.selected {
+  background: #e5f7ed;
+  color: #16a34a;
+}
+
+.remove-button {
+  background: #fff0f0;
+  color: #dc5555;
+}
+
+/* SELECCIONADOS */
+
+.selected-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selected-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: #344054;
+  font-size: 13px;
+}
+
+.selected-item span {
+  flex: 1;
+}
+
+/* MENSAJES */
+
+.empty-text {
+  color: #8993a4;
+  font-size: 12px;
+  text-align: center;
+  padding: 12px 5px;
+  line-height: 1.5;
+}
+
+.error-message {
+  padding: 13px;
+  border-radius: 12px;
+  background: #fff0f0;
+  color: #c03939;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+/* BOTÓN CREAR */
+
+.create-button {
+  width: 100%;
+  height: 51px;
+  border: none;
+  border-radius: 14px;
+  background: #5365c9;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 5px 0 25px;
+}
+
+.create-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 400px) {
+  .create-container {
+    padding: 14px;
+  }
+
+  .section-card {
+    padding: 14px;
+  }
+}

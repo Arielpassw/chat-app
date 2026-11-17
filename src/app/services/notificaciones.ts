@@ -7,6 +7,7 @@ import {
 
 import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 import { SupabaseService } from './supabase';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -155,6 +156,39 @@ export class NotificacionesService {
     } catch (error) {
       console.error('Error registrando dispositivo:', error);
       return null;
+    }
+  }
+
+  // Invocar la Edge Function de Supabase para enviar push a los demás participantes.
+  async enviarNotificacion(chatId: string, messageId: string): Promise<void> {
+    if (!chatId || !messageId) return;
+
+    const { data, error } = await this.supabaseService.client.auth.getSession();
+    if (error) throw error;
+
+    const accessToken = data.session?.access_token;
+    if (!accessToken) {
+      throw new Error('No existe una sesión activa para enviar la notificación.');
+    }
+
+    const endpoint =
+      `${environment.supabase.url}/functions/v1/enviar-notificacion`;
+
+    const respuesta = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        message_id: messageId
+      })
+    });
+
+    if (!respuesta.ok) {
+      const detalle = await respuesta.text();
+      throw new Error(`No se pudo enviar la notificación: ${detalle}`);
     }
   }
 

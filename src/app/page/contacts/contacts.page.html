@@ -1,6 +1,4 @@
-<ion-content
-  [fullscreen]="true"
-  class="contacts-content">
+<ion-content [fullscreen]="true" class="contacts-content">
 
   <div class="contacts-container">
 
@@ -9,12 +7,9 @@
 
       <div>
 
-        <button
-          class="back-button"
-          (click)="volverChats()">
+        <button class="back-button" (click)="volverChats()">
 
-          <ion-icon
-            name="arrow-back-outline">
+          <ion-icon name="arrow-back-outline">
           </ion-icon>
 
         </button>
@@ -31,13 +26,16 @@
 
       </div>
 
-      <button
-        class="profile-button"
-        (click)="irAPerfil()">
+      <button class="profile-button" (click)="irAPerfil()">
 
-        <ion-icon
-          name="person-outline">
+        <ion-icon name="person-outline">
         </ion-icon>
+
+      </button>
+      
+      <button class="profile-button" (click)="irACrearSala()">
+
+        <ion-icon name="add-outline"></ion-icon>
 
       </button>
 
@@ -47,23 +45,14 @@
     <!-- BUSCADOR -->
     <div class="search-box">
 
-      <ion-icon
-        name="search-outline">
+      <ion-icon name="search-outline">
       </ion-icon>
 
-      <input
-        type="text"
-        [(ngModel)]="busqueda"
-        placeholder="Buscar contactos..."
-      />
+      <input type="text" [(ngModel)]="busqueda" (ngModelChange)="buscarContactos()" placeholder="Buscar contactos..." />
 
-      <button
-        *ngIf="busqueda"
-        class="clear-button"
-        (click)="busqueda = ''">
+      <button *ngIf="busqueda" class="clear-button" (click)="busqueda = ''">
 
-        <ion-icon
-          name="close-circle-outline">
+        <ion-icon name="close-circle-outline">
         </ion-icon>
 
       </button>
@@ -76,8 +65,7 @@
 
       <div class="info-icon">
 
-        <ion-icon
-          name="people-outline">
+        <ion-icon name="people-outline">
         </ion-icon>
 
       </div>
@@ -114,9 +102,7 @@
     <!-- LISTA -->
     <div class="contact-list">
 
-      <div
-        class="contact-item"
-        *ngFor="let contacto of contactosFiltrados">
+      <div class="contact-item" *ngFor="let contacto of contactosFiltrados">
 
         <div class="avatar">
 
@@ -146,13 +132,9 @@
         </div>
 
 
-        <button
-          class="chat-button"
-          (click)="iniciarChat(contacto)">
+        <button class="chat-button" [disabled]="creandoChat" (click)="iniciarChat(contacto)">
 
-          <ion-icon
-            name="chatbubble-outline">
-          </ion-icon>
+          <ion-icon name="chatbubble-outline"></ion-icon>
 
         </button>
 
@@ -162,14 +144,11 @@
 
 
     <!-- SIN RESULTADOS -->
-    <div
-      class="empty-state"
-      *ngIf="contactosFiltrados.length === 0">
+    <div class="empty-state" *ngIf="contactosFiltrados.length === 0">
 
       <div class="empty-icon">
 
-        <ion-icon
-          name="person-outline">
+        <ion-icon name="person-outline">
         </ion-icon>
 
       </div>

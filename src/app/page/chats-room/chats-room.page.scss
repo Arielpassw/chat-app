@@ -258,3 +258,22 @@
   }
 
 }
+.attachment { margin-top: 2px; }
+.attachment img { display:block; width:100%; max-width:280px; max-height:300px; object-fit:cover; border-radius:12px; }
+.file-attachment, .location-attachment { display:flex; align-items:center; gap:10px; padding:10px; border-radius:12px; background:rgba(255,255,255,.12); }
+.received .file-attachment, .received .location-attachment { background:#f2f4f8; }
+.file-attachment ion-icon, .location-attachment ion-icon { font-size:25px; }
+.file-attachment div, .location-attachment div { flex:1; min-width:0; display:flex; flex-direction:column; }
+.file-attachment strong, .location-attachment strong { font-size:12px; overflow:hidden; text-overflow:ellipsis; }
+.file-attachment small, .location-attachment small { font-size:10px; opacity:.75; margin-top:3px; }
+.file-attachment a, .location-attachment button { border:0; border-radius:8px; padding:6px 9px; background:#5365c9; color:white; text-decoration:none; font-size:10px; }
+.message-actions { display:flex; gap:2px; margin-top:5px; }
+.message-actions button { border:0; background:transparent; padding:2px; color:inherit; opacity:.7; }
+.message-actions ion-icon { font-size:14px; }
+.deleted-message { font-style:italic; opacity:.65; font-size:12px; }
+.edit-box { margin-top:6px; }
+.edit-box input { width:100%; border:1px solid #d8ddea; border-radius:8px; padding:7px; outline:none; }
+.edit-box button { border:0; border-radius:7px; margin:5px 5px 0 0; padding:5px 8px; font-size:10px; background:#5365c9; color:#fff; }
+.message-input-container { gap:7px; }
+.tool-button { width:40px; height:40px; border:0; border-radius:12px; background:#fff; color:#5365c9; display:flex; align-items:center; justify-content:center; font-size:19px; }
+.tool-button:disabled { opacity:.45; }

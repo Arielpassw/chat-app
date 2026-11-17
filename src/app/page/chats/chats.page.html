@@ -61,9 +61,10 @@
 
 
     <!-- NUEVA CONVERSACIÓN -->
-    <button
-      class="new-chat-button"
-      (click)="irAContactos()">
+    <div class="new-chat-actions">
+      <button
+        class="new-chat-button"
+        (click)="irAContactos()">
 
       <div class="new-chat-icon">
 
@@ -90,7 +91,13 @@
         class="new-chat-arrow">
       </ion-icon>
 
-    </button>
+      </button>
+
+      <button class="new-room-button" (click)="irACrearSala()">
+        <ion-icon name="add-outline"></ion-icon>
+        <span>Crear grupo</span>
+      </button>
+    </div>
 
 
     <!-- TÍTULO -->
@@ -101,7 +108,7 @@
       </h2>
 
       <span>
-        {{ conversaciones.length }}
+        {{ conversacionesFiltradas.length }}
       </span>
 
     </div>
@@ -157,7 +164,7 @@
 
       <div
         class="chat-item"
-        *ngFor="let chat of conversaciones"
+        *ngFor="let chat of conversacionesFiltradas"
         (click)="abrirChat(chat)">
 
         <div class="avatar">
@@ -211,7 +218,7 @@
       *ngIf="
         !cargando &&
         !error &&
-        conversaciones.length === 0
+        conversacionesFiltradas.length === 0
       ">
 
       <div class="empty-icon">
