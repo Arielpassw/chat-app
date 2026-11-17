@@ -57,31 +57,66 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
     });
   }
 
+
   async ngOnInit(): Promise<void> {
     this.chatId = this.route.snapshot.paramMap.get('id');
+
+    console.log('ID de conversación recibido:', this.chatId);
+
     if (!this.chatId) {
+      this.error = 'No se recibió el identificador de la conversación.';
+      this.cargando = false;
       await this.router.navigate(['/chats']);
       return;
     }
 
     try {
+      console.log('1. Verificando usuario...');
+
       const usuario = await this.auth.obtenerUsuario();
+
       if (!usuario) {
         await this.router.navigate(['/login']);
         return;
       }
 
       this.usuarioId = usuario.id;
+      console.log('2. Usuario autenticado:', this.usuarioId);
+
+      console.log('3. Cargando cabecera...');
       await this.cargarCabecera();
+
+      console.log('4. Cargando mensajes...');
       await this.cargarMensajes();
-      await this.escucharMensajes();
+
+      console.log('5. Finalizando carga inicial...');
+
+      this.cargando = false;
+
+      // Actualizar última lectura sin bloquear la pantalla.
+      this.salaService.actualizarUltimaLectura(this.chatId)
+        .catch(error => {
+          console.warn('Error actualizando última lectura:', error);
+        });
+
+      // Activar mensajes en tiempo real.
+      this.escucharMensajes().catch(error => {
+        console.error('Error activando mensajes en tiempo real:', error);
+        this.error = 'No se pudo activar la actualización en tiempo real.';
+      });
+
+      console.log('6. Pantalla de conversación inicializada.');
+
     } catch (error: any) {
       console.error('Error inicializando chat:', error);
-      this.error = error?.message || 'No se pudo cargar la conversación.';
-    } finally {
+
+      this.error =
+        error?.message || 'No se pudo cargar la conversación.';
+
       this.cargando = false;
     }
   }
+
 
   async cargarCabecera(): Promise<void> {
     if (!this.chatId) return;
@@ -111,21 +146,35 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
     }
   }
 
+
   async cargarMensajes(): Promise<void> {
     if (!this.chatId) return;
 
     try {
       this.error = '';
+
       this.mensajes = await this.chatService.obtenerMensajes(this.chatId);
 
+      console.log('ID de sala:', this.chatId);
+      console.log('Usuario actual:', this.usuarioId);
+      console.log('Mensajes obtenidos:', this.mensajes);
+      console.log('Mensajes recuperados:', this.mensajes);
+
+      // Preparar archivos sin bloquear la carga de la conversación.
       for (const mensaje of this.mensajes) {
-        await this.prepararArchivo(mensaje);
+        this.prepararArchivo(mensaje).catch(error => {
+          console.warn('Error preparando archivo:', error);
+        });
       }
+
     } catch (error: any) {
       console.error('Error obteniendo mensajes:', error);
-      this.error = error?.message || 'No se pudieron cargar los mensajes.';
+
+      this.error =
+        error?.message || 'No se pudieron cargar los mensajes.';
     }
   }
+
 
   async prepararArchivo(mensaje: Mensaje): Promise<void> {
     if (!mensaje.archivo_url || !['imagen', 'archivo'].includes(mensaje.tipo)) return;
@@ -147,6 +196,9 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
         if (!this.mensajes.some(m => m.id === mensaje.id)) {
           this.mensajes.push(mensaje);
           await this.prepararArchivo(mensaje);
+          if (mensaje.sender_id !== this.usuarioId && this.chatId) {
+            await this.salaService.actualizarUltimaLectura(this.chatId);
+          }
         }
       } else if (evento.tipo === 'UPDATE') {
         const indice = this.mensajes.findIndex(m => m.id === mensaje.id);
@@ -178,7 +230,7 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
 
     try {
       this.enviando = true;
-      const mensaje = await this.chatService.enviarMensaje(datos);
+      const mensaje = await this.chatService.enviarMensaje({ ...datos, chat_id: this.chatId });
 
       // Firebase FCM + Edge Function de Supabase.
       try {
@@ -201,20 +253,11 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
     if (!archivo) return;
 
     try {
-      const subido = await this.storageService.subirArchivoChat(this.chatId, archivo);
-      const tipo = archivo.type.startsWith('image/') ? 'imagen' : 'archivo';
-
-      await this.enviar({
-        chat_id: this.chatId,
-        tipo,
-        contenido: tipo === 'imagen' ? 'Imagen compartida' : 'Archivo compartido',
-        archivo_url: subido.path,
-        archivo_nombre: subido.nombre,
-        archivo_tamano: subido.tamano
+      await this.router.navigate(['/media-preview'], {
+        state: { archivo, chatId: this.chatId }
       });
     } catch (error: any) {
-      console.error('Error subiendo archivo:', error);
-      this.error = error?.message || 'No se pudo subir el archivo.';
+      this.error = error?.message || 'No se pudo abrir la vista previa.';
     } finally {
       input.value = '';
     }

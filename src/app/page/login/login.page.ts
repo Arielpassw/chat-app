@@ -11,6 +11,7 @@ import {
 } from 'ionicons/icons';
 import { Auth } from '../../services/auth';
 import { NotificacionesService } from '../../services/notificaciones';
+import { PreferenciasService } from '../../services/preferencias';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,8 @@ export class LoginPage {
   constructor(
     private auth: Auth,
     private router: Router,
-    private notificaciones: NotificacionesService
+    private notificaciones: NotificacionesService,
+    private preferencias: PreferenciasService
   ) {
     addIcons({ mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline, chatbubblesOutline });
   }
@@ -43,8 +45,11 @@ export class LoginPage {
     this.cargando = true;
     try {
       await this.auth.iniciarSesion(this.email.trim(), this.password);
-      // Firebase se utiliza para FCM y el token queda registrado en Supabase.
-      await this.notificaciones.registrarDispositivo();
+      // Respetar la preferencia local antes de pedir permisos del sistema.
+      const notificacionesActivas = await this.preferencias.obtener<boolean>('notificaciones');
+      if (notificacionesActivas !== false) {
+        await this.notificaciones.registrarDispositivo();
+      }
       await this.router.navigate(['/home']);
     } catch (error: any) {
       console.error('Error al iniciar sesión:', error);

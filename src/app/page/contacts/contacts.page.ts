@@ -226,8 +226,8 @@ export class ContactsPage implements OnInit {
 
       }]);
 
-      // Actualizar la lista de conversaciones.
-      await this.router.navigate(['/chats']);
+      // Abrir directamente la conversación individual.
+      await this.router.navigate(['/chats-room', sala.id]);
 
     } catch (error: any) {
 

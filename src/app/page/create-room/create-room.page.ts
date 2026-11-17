@@ -4,6 +4,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import {
+  IonHeader,
+  IonToolbar,
+  IonButton,
+  IonTitle,
   IonContent,
   IonIcon
 } from '@ionic/angular';
@@ -39,6 +43,10 @@ interface ContactoUI {
   imports: [
     CommonModule,
     FormsModule,
+    IonHeader,
+    IonToolbar,
+    IonButton,
+    IonTitle,
     IonContent,
     IonIcon
   ]
@@ -295,9 +303,8 @@ export class CreateRoomPage implements OnInit {
         participantes
       );
 
-      // 3. Regresar a la lista de conversaciones.
-
-      await this.router.navigate(['/chats']);
+      // 3. Abrir directamente el grupo creado.
+      await this.router.navigate(['/chats-room', sala.id]);
 
     } catch (error: any) {
 

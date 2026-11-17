@@ -35,6 +35,30 @@ export class SalaService {
 
   // Crear una sala individual o grupal mediante RPC
   async crearSala(datos: CrearSala): Promise<Sala> {
+
+    const { data: sesionData, error: sesionError } =
+      await this.supabaseService.client.auth.getSession();
+
+    if (sesionError) throw sesionError;
+
+    console.log(
+      'Sesión de Supabase:',
+      sesionData.session
+        ? 'Usuario autenticado'
+        : 'No existe sesión'
+    );
+
+    console.log(
+      'ID del usuario:',
+      sesionData.session?.user.id ?? null
+    );
+
+    if (!sesionData.session) {
+      throw new Error(
+        'Debes iniciar sesión antes de crear una conversación.'
+      );
+    }
+
     if (!['individual', 'grupal'].includes(datos.tipo)) {
       throw new Error('El tipo de sala no es válido.');
     }

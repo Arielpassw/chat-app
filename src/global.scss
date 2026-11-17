@@ -34,4 +34,22 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* Page colors are designed for light backgrounds; system dark colors made text disappear. */
+
+:root {
+  color-scheme: light;
+  --ion-text-color: #202b3c;
+  --ion-background-color: #f6f5fa;
+}
+
+body,
+ion-content {
+  color: #202b3c;
+}
+
+input,
+textarea,
+select,
+button {
+  color-scheme: light;
+}
