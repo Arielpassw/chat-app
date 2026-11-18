@@ -1,5 +1,4 @@
-
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { App } from '@capacitor/app';
@@ -33,6 +32,7 @@ import {
 } from 'ionicons/icons';
 
 import { SupabaseService } from './services/supabase';
+import { PreferenciasService } from './services/preferencias';
 
 @Component({
   selector: 'app-root',
@@ -43,13 +43,14 @@ import { SupabaseService } from './services/supabase';
     IonRouterOutlet
   ]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   private ultimoCodigoProcesado = '';
 
   constructor(
     private supabaseService: SupabaseService,
-    private router: Router
+    private router: Router,
+    private preferencias: PreferenciasService
   ) {
     addIcons({
       arrowBackOutline,
@@ -78,6 +79,29 @@ export class AppComponent {
     });
 
     void this.configurarDeepLinks();
+  }
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const modoOscuro =
+        await this.preferencias.obtener<boolean>('modo_oscuro') ?? false;
+
+      document.documentElement.classList.toggle(
+        'dark-mode',
+        modoOscuro
+      );
+
+      document.documentElement.classList.toggle(
+        'ion-palette-dark',
+        modoOscuro
+      );
+
+    } catch (error) {
+      console.warn(
+        'No se pudo cargar la preferencia de tema:',
+        error
+      );
+    }
   }
 
   private async configurarDeepLinks(): Promise<void> {
@@ -127,12 +151,18 @@ export class AppComponent {
         throw errorSesion;
       }
 
-      console.log('Correo confirmado y sesión autenticada correctamente.');
+      console.log(
+        'Correo confirmado y sesión autenticada correctamente.'
+      );
 
       await this.router.navigateByUrl('/login');
 
     } catch (error) {
-      console.error('No se pudo procesar el enlace de autenticación:', error);
+      console.error(
+        'No se pudo procesar el enlace de autenticación:',
+        error
+      );
+
       await this.router.navigateByUrl('/login');
     }
   }

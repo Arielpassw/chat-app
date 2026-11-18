@@ -1,5 +1,6 @@
 .login-content {
-  --background: #f5f7fb;
+  --background: var(--app-bg);
+  background: var(--app-bg);
 }
 
 .login-container {
@@ -32,11 +33,11 @@
 
   background: linear-gradient(
     135deg,
-    #5b5ce2,
-    #7b61ff
+    var(--app-primary),
+    var(--app-purple)
   );
 
-  box-shadow: 0 12px 30px rgba(91, 92, 226, 0.25);
+  box-shadow: var(--app-shadow-md);
 }
 
 .logo-circle ion-icon {
@@ -48,12 +49,12 @@
   margin: 0;
   font-size: 32px;
   font-weight: 800;
-  color: #1d1d2c;
+  color: var(--app-text);
 }
 
 .logo-section p {
   margin: 10px 0 0;
-  color: #77788a;
+  color: var(--app-text-secondary);
   font-size: 15px;
 }
 
@@ -78,7 +79,7 @@
   z-index: 5;
 
   font-size: 20px;
-  color: #5b5ce2;
+  color: var(--app-primary);
 }
 
 /* Input */
@@ -86,33 +87,33 @@
 .input-group ion-input {
   width: 100%;
 
-  --background: #ffffff;
-  --color: #1d1d2c;
+  --background: var(--app-input-bg);
+  --color: var(--app-input-text);
 
-  --border-color: #d9d9e6;
+  --border-color: var(--app-input-border);
   --border-width: 1px;
   --border-style: solid;
   --border-radius: 14px;
 
-  --highlight-color-focused: #5b5ce2;
+  --highlight-color-focused: var(--app-primary);
 
   --padding-start: 48px;
   --padding-end: 48px;
 
-  --placeholder-color: #9a9aaa;
+  --placeholder-color: var(--app-placeholder);
   --placeholder-opacity: 1;
 }
 
 /* Color del texto de la etiqueta */
 
 .input-group ion-input::part(label) {
-  color: #77788a;
+  color: var(--app-text-secondary);
 }
 
 /* Cuando el input recibe el foco */
 
 .input-group ion-input.has-focus {
-  --border-color: #5b5ce2;
+  --border-color: var(--app-primary);
 }
 
 /* ---------- BOTÓN MOSTRAR PASSWORD ---------- */
@@ -122,7 +123,7 @@
   right: 2px;
   z-index: 10;
 
-  --color: #77788a;
+  --color: var(--app-text-secondary);
   --background: transparent;
 
   margin: 0;
@@ -133,14 +134,15 @@
 .error-message {
   margin: 4px 4px 12px;
   font-size: 14px;
+  color: var(--app-danger);
 }
 
 /* ---------- BOTÓN LOGIN ---------- */
 
 .login-button {
-  --background: #5b5ce2;
-  --background-hover: #4d4ecf;
-  --background-activated: #4d4ecf;
+  --background: var(--app-primary);
+  --background-hover: var(--app-primary-hover);
+  --background-activated: var(--app-primary-hover);
 
   --border-radius: 14px;
 
@@ -150,7 +152,7 @@
   font-size: 16px;
   font-weight: 700;
 
-  box-shadow: 0 8px 20px rgba(91, 92, 226, 0.20);
+  box-shadow: var(--app-shadow-md);
 }
 
 .login-button ion-spinner {
@@ -167,13 +169,38 @@
 
 .register-section p {
   display: inline;
-  color: #77788a;
+  color: var(--app-text-secondary);
   font-size: 14px;
 }
 
 .register-button {
-  --color: #5b5ce2;
+  --color: var(--app-primary);
 
   font-weight: 700;
   font-size: 14px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 400px) {
+  .login-container {
+    padding: 28px 18px;
+  }
+
+  .logo-section {
+    margin-bottom: 32px;
+  }
+
+  .logo-circle {
+    width: 76px;
+    height: 76px;
+  }
+
+  .logo-circle ion-icon {
+    font-size: 38px;
+  }
+
+  .logo-section h1 {
+    font-size: 29px;
+  }
 }

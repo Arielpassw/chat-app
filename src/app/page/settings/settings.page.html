@@ -3,40 +3,92 @@
     <ion-button fill="clear" slot="start" (click)="volver()">
       <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-button>
+
     <ion-title>Configuración</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="settings-content">
+
   <div class="settings-container">
+
     <div class="settings-card">
+
+      <!-- NOTIFICACIONES -->
       <div class="setting-row">
-        <div class="setting-icon"><ion-icon name="notifications-outline"></ion-icon></div>
-        <div class="setting-info">
-          <strong>Notificaciones</strong>
-          <span>Recibir avisos de nuevos mensajes</span>
+
+        <div class="setting-icon">
+          <ion-icon name="notifications-outline"></ion-icon>
         </div>
-        <ion-toggle [(ngModel)]="notificaciones" (ionChange)="cambiarNotificaciones()"></ion-toggle>
+
+        <div class="setting-info">
+
+          <strong>Notificaciones</strong>
+
+          <span>
+            Recibir avisos de nuevos mensajes
+          </span>
+
+        </div>
+
+        <ion-toggle
+          [(ngModel)]="notificaciones"
+          (ionChange)="cambiarNotificaciones()">
+        </ion-toggle>
+
       </div>
 
+
+      <!-- MODO OSCURO -->
       <div class="setting-row">
-        <div class="setting-icon"><ion-icon name="moon-outline"></ion-icon></div>
-        <div class="setting-info">
-          <strong>Modo oscuro</strong>
-          <span>Guardar preferencia visual del dispositivo</span>
+
+        <div class="setting-icon">
+          <ion-icon name="moon-outline"></ion-icon>
         </div>
-        <ion-toggle [(ngModel)]="modoOscuro" (ionChange)="cambiarModoOscuro()"></ion-toggle>
+
+        <div class="setting-info">
+
+          <strong>Modo oscuro</strong>
+
+          <span>
+            Cambiar la apariencia de toda la aplicación
+          </span>
+
+        </div>
+
+        <ion-toggle
+          [(ngModel)]="modoOscuro"
+          (ionChange)="cambiarModoOscuro()">
+        </ion-toggle>
+
       </div>
+
     </div>
 
-    <button class="clear-button" (click)="limpiarPreferencias()">
+
+    <!-- RESTAURAR -->
+    <button
+      class="clear-button"
+      (click)="limpiarPreferencias()">
+
       <ion-icon name="trash-outline"></ion-icon>
+
       Restaurar preferencias
+
     </button>
 
-    <p class="saved" *ngIf="mensaje">
+
+    <!-- MENSAJE -->
+    <p
+      class="saved"
+      *ngIf="mensaje">
+
       <ion-icon name="checkmark-outline"></ion-icon>
+
       {{ mensaje }}
+
     </p>
+
   </div>
+
 </ion-content>
