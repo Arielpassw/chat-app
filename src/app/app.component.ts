@@ -1,6 +1,8 @@
 
 import { Component } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { App } from '@capacitor/app';
 
 import { addIcons } from 'ionicons';
 
@@ -30,6 +32,8 @@ import {
   closeOutline,
 } from 'ionicons/icons';
 
+import { SupabaseService } from './services/supabase';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -40,7 +44,13 @@ import {
   ]
 })
 export class AppComponent {
-  constructor() {
+
+  private ultimoCodigoProcesado = '';
+
+  constructor(
+    private supabaseService: SupabaseService,
+    private router: Router
+  ) {
     addIcons({
       arrowBackOutline,
       personOutline,
@@ -66,5 +76,64 @@ export class AppComponent {
       imageOutline,
       closeOutline,
     });
+
+    void this.configurarDeepLinks();
+  }
+
+  private async configurarDeepLinks(): Promise<void> {
+    await App.addListener('appUrlOpen', async (evento) => {
+      await this.procesarEnlace(evento.url);
+    });
+
+    const inicio = await App.getLaunchUrl();
+
+    if (inicio?.url) {
+      await this.procesarEnlace(inicio.url);
+    }
+  }
+
+  private async procesarEnlace(url: string): Promise<void> {
+    try {
+      const enlace = new URL(url);
+
+      if (
+        enlace.protocol !== 'io.ionic.starter:' ||
+        enlace.hostname !== 'login-callback'
+      ) {
+        return;
+      }
+
+      const error = enlace.searchParams.get('error_description');
+
+      if (error) {
+        console.error('Error de confirmación:', error);
+        await this.router.navigateByUrl('/login');
+        return;
+      }
+
+      const codigo = enlace.searchParams.get('code');
+
+      if (!codigo || codigo === this.ultimoCodigoProcesado) {
+        return;
+      }
+
+      this.ultimoCodigoProcesado = codigo;
+
+      const { error: errorSesion } =
+        await this.supabaseService.client.auth.exchangeCodeForSession(codigo);
+
+      if (errorSesion) {
+        this.ultimoCodigoProcesado = '';
+        throw errorSesion;
+      }
+
+      console.log('Correo confirmado y sesión autenticada correctamente.');
+
+      await this.router.navigateByUrl('/login');
+
+    } catch (error) {
+      console.error('No se pudo procesar el enlace de autenticación:', error);
+      await this.router.navigateByUrl('/login');
+    }
   }
 }

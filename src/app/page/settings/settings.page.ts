@@ -35,7 +35,10 @@ export class SettingsPage implements OnInit {
     try {
       this.notificaciones = await this.preferencias.obtener<boolean>('notificaciones') ?? true;
       this.modoOscuro = await this.preferencias.obtener<boolean>('modo_oscuro') ?? false;
-      document.body.classList.toggle('dark', this.modoOscuro);
+      document.documentElement.classList.toggle(
+        'ion-palette-dark',
+        this.modoOscuro
+      );
     } catch (error: any) {
       this.mensaje = error?.message || 'No se pudieron cargar las preferencias.';
     }
@@ -58,13 +61,33 @@ export class SettingsPage implements OnInit {
     }
   }
 
+  // Cambia el modo oscuro y guarda la preferencia.
   async cambiarModoOscuro(): Promise<void> {
     try {
-      await this.preferencias.guardar('modo_oscuro', this.modoOscuro);
-      document.body.classList.toggle('dark', this.modoOscuro);
-      this.mensaje = 'Preferencia guardada.';
+      document.documentElement.classList.toggle(
+        'ion-palette-dark',
+        this.modoOscuro
+      );
+
+      await this.preferencias.guardar(
+        'modo_oscuro',
+        this.modoOscuro
+      );
+
+      this.mensaje = this.modoOscuro
+        ? 'Modo oscuro activado.'
+        : 'Modo claro activado.';
+
     } catch (error: any) {
-      this.mensaje = error?.message || 'No se pudo guardar la preferencia.';
+      this.modoOscuro = !this.modoOscuro;
+
+      document.documentElement.classList.toggle(
+        'ion-palette-dark',
+        this.modoOscuro
+      );
+
+      this.mensaje = error?.message ||
+        'No se pudo guardar la preferencia.';
     }
   }
 
@@ -73,7 +96,7 @@ export class SettingsPage implements OnInit {
       await this.preferencias.limpiar();
       this.notificaciones = true;
       this.modoOscuro = false;
-      document.body.classList.remove('dark');
+      document.documentElement.classList.remove('ion-palette-dark');
       this.mensaje = 'Preferencias restauradas.';
     } catch (error: any) {
       this.mensaje = error?.message || 'No se pudieron restaurar las preferencias.';

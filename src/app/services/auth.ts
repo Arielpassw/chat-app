@@ -14,7 +14,7 @@ export class Auth {
 
   constructor(
     private supabaseService: SupabaseService
-  ) {}
+  ) { }
 
   // Registrar un usuario
   async registrar(
@@ -35,6 +35,7 @@ export class Auth {
         email: email.trim(),
         password,
         options: {
+          emailRedirectTo: 'io.ionic.starter://login-callback',
           data: {
             nombre: nombre.trim()
           }

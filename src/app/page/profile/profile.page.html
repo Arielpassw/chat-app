@@ -23,8 +23,8 @@
     <ng-container *ngIf="!cargando && usuario">
       <div class="profile-card">
         <div class="avatar-large">
-          <img *ngIf="usuario.foto_url" [src]="usuario.foto_url" [alt]="usuario.nombre">
-          <span *ngIf="!usuario.foto_url">{{ obtenerIniciales(usuario.nombre) }}</span>
+          <img *ngIf="fotoUrl" [src]="fotoUrl" [alt]="usuario.nombre">
+          <span *ngIf="!fotoUrl">{{ obtenerIniciales(usuario.nombre) }}</span>
         </div>
         <h2>{{ usuario.nombre }}</h2>
         <p>{{ usuario.username ? '@' + usuario.username.replace('@','') : 'Sin username' }}</p>

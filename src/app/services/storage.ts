@@ -21,7 +21,7 @@ export class StorageService {
 
   constructor(
     private supabaseService: SupabaseService
-  ) {}
+  ) { }
 
   // Obtener el ID del usuario autenticado
   private async obtenerUsuarioId(): Promise<string> {
@@ -68,6 +68,9 @@ export class StorageService {
     }
 
     if (archivo.size > this.MAX_AVATAR) {
+      console.log('ARCHIVO SELECCIONADO:', archivo.name);
+      console.log('TAMAÑO EN BYTES:', archivo.size);
+      console.log('TAMAÑO EN MB:', (archivo.size / (1024 * 1024)).toFixed(2));
       throw new Error('La imagen no puede superar los 5 MB.');
     }
 

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonIcon } from '@ionic/angular';
@@ -48,7 +48,9 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
     private storageService: StorageService,
     private ubicacionService: UbicacionService,
     private notificacionesService: NotificacionesService,
-    private auth: Auth
+    private auth: Auth,
+    private cdr: ChangeDetectorRef
+
   ) {
     addIcons({
       arrowBackOutline, chatbubblesOutline, alertCircleOutline, checkmarkDoneOutline,
@@ -66,6 +68,13 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
     if (!this.chatId) {
       this.error = 'No se recibió el identificador de la conversación.';
       this.cargando = false;
+      // Forzar la detección de cambios para actualizar la vista.
+      this.cdr.detectChanges();
+      console.log(
+        'ESTADO FINAL DE CARGA:',
+        this.cargando
+      );
+
       await this.router.navigate(['/chats']);
       return;
     }
@@ -92,6 +101,12 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
       console.log('5. Finalizando carga inicial...');
 
       this.cargando = false;
+      this.cdr.detectChanges();
+
+      console.log(
+        'ESTADO FINAL DE CARGA:',
+        this.cargando
+      );
 
       // Actualizar última lectura sin bloquear la pantalla.
       this.salaService.actualizarUltimaLectura(this.chatId)
@@ -114,6 +129,11 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
         error?.message || 'No se pudo cargar la conversación.';
 
       this.cargando = false;
+
+      // Forzar la detección de cambios para actualizar la vista.
+      this.cdr.detectChanges();
+
+
     }
   }
 
@@ -176,15 +196,39 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
   }
 
 
+
   async prepararArchivo(mensaje: Mensaje): Promise<void> {
-    if (!mensaje.archivo_url || !['imagen', 'archivo'].includes(mensaje.tipo)) return;
+    if (
+      !mensaje.archivo_url ||
+      !['imagen', 'archivo'].includes(mensaje.tipo)
+    ) {
+      return;
+    }
+
     try {
-      const url = await this.storageService.obtenerUrlFirmada(mensaje.archivo_url);
+      console.log('Preparando archivo:', mensaje.id);
+
+      const url = await this.storageService.obtenerUrlFirmada(
+        mensaje.archivo_url
+      );
+
       this.urlsArchivos.set(mensaje.id, url);
+
+      console.log('URL del archivo preparada:', mensaje.id);
+
     } catch (error) {
-      console.warn('No se pudo generar la URL temporal:', error);
+      console.warn(
+        'No se pudo generar la URL temporal:',
+        mensaje.id,
+        error
+      );
+
+    } finally {
+      // Actualizar la vista cuando termine la carga del archivo.
+      this.cdr.detectChanges();
     }
   }
+
 
   async escucharMensajes(): Promise<void> {
     if (!this.chatId) return;
@@ -210,6 +254,9 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
         this.mensajes = this.mensajes.filter(m => m.id !== mensaje.id);
         this.urlsArchivos.delete(mensaje.id);
       }
+
+      this.cdr.detectChanges();
+
     });
   }
 
@@ -225,26 +272,51 @@ export class ChatsRoomPage implements OnInit, OnDestroy {
     this.nuevoMensaje = '';
   }
 
+
   async enviar(datos: any): Promise<void> {
     if (!this.chatId || this.enviando) return;
 
     try {
       this.enviando = true;
-      const mensaje = await this.chatService.enviarMensaje({ ...datos, chat_id: this.chatId });
+      this.error = '';
+      this.cdr.detectChanges();
 
-      // Firebase FCM + Edge Function de Supabase.
-      try {
-        await this.notificacionesService.enviarNotificacion(mensaje.chat_id, mensaje.id);
-      } catch (error) {
-        console.warn('El mensaje se envió, pero la notificación no pudo procesarse:', error);
+      // 1. Guardar el mensaje en Supabase.
+      const mensaje = await this.chatService.enviarMensaje({
+        ...datos,
+        chat_id: this.chatId
+      });
+
+      // 2. Mostrarlo inmediatamente, evitando duplicados
+      // si también llega mediante Realtime.
+      if (!this.mensajes.some(m => m.id === mensaje.id)) {
+        this.mensajes.push(mensaje);
       }
+
+      this.cdr.detectChanges();
+
+      // 3. Enviar la notificación sin bloquear el envío.
+      this.notificacionesService
+        .enviarNotificacion(mensaje.chat_id, mensaje.id)
+        .catch(error => {
+          console.warn(
+            'El mensaje se envió, pero falló la notificación:',
+            error
+          );
+        });
+
     } catch (error: any) {
       console.error('Error enviando mensaje:', error);
-      this.error = error?.message || 'No se pudo enviar el mensaje.';
+
+      this.error =
+        error?.message || 'No se pudo enviar el mensaje.';
+
     } finally {
       this.enviando = false;
+      this.cdr.detectChanges();
     }
   }
+
 
   async seleccionarArchivo(event: Event): Promise<void> {
     if (!this.chatId) return;

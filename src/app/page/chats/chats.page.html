@@ -1,6 +1,4 @@
-<ion-content
-  [fullscreen]="true"
-  class="chats-content">
+<ion-content [fullscreen]="true" class="chats-content">
 
   <div class="chats-container">
 
@@ -9,12 +7,9 @@
 
       <div>
 
-        <button
-          class="back-button"
-          (click)="volverHome()">
+        <button class="back-button" (click)="volverHome()">
 
-          <ion-icon
-            name="arrow-back-outline">
+          <ion-icon name="arrow-back-outline">
           </ion-icon>
 
         </button>
@@ -32,12 +27,9 @@
       </div>
 
 
-      <button
-        class="profile-button"
-        (click)="irAPerfil()">
+      <button class="profile-button" (click)="irAPerfil()">
 
-        <ion-icon
-          name="person-outline">
+        <ion-icon name="person-outline">
         </ion-icon>
 
       </button>
@@ -48,13 +40,12 @@
     <!-- BUSCADOR -->
     <div class="search-box">
 
-      <ion-icon
-        name="search-outline">
+      <ion-icon name="search-outline">
       </ion-icon>
 
-      <input
-        type="text"
-        placeholder="Buscar conversaciones..."
+      <input type="text"
+      placeholder="Buscar conversaciones..."
+      [(ngModel)]="busqueda"
       />
 
     </div>
@@ -62,34 +53,29 @@
 
     <!-- NUEVA CONVERSACIÓN -->
     <div class="new-chat-actions">
-      <button
-        class="new-chat-button"
-        (click)="irAContactos()">
+      <button class="new-chat-button" (click)="irAContactos()">
 
-      <div class="new-chat-icon">
+        <div class="new-chat-icon">
 
-        <ion-icon
-          name="add-outline">
+          <ion-icon name="add-outline">
+          </ion-icon>
+
+        </div>
+
+        <div>
+
+          <span>
+            Nueva conversación
+          </span>
+
+          <small>
+            Inicia un chat con un contacto
+          </small>
+
+        </div>
+
+        <ion-icon name="chevron-forward-outline" class="new-chat-arrow">
         </ion-icon>
-
-      </div>
-
-      <div>
-
-        <span>
-          Nueva conversación
-        </span>
-
-        <small>
-          Inicia un chat con un contacto
-        </small>
-
-      </div>
-
-      <ion-icon
-        name="chevron-forward-outline"
-        class="new-chat-arrow">
-      </ion-icon>
 
       </button>
 
@@ -115,14 +101,11 @@
 
 
     <!-- CARGANDO -->
-    <div
-      class="loading-state"
-      *ngIf="cargando">
+    <div class="loading-state" *ngIf="cargando">
 
       <div class="loading-icon">
 
-        <ion-icon
-          name="chatbubbles-outline">
+        <ion-icon name="chatbubbles-outline">
         </ion-icon>
 
       </div>
@@ -135,20 +118,16 @@
 
 
     <!-- ERROR -->
-    <div
-      class="error-state"
-      *ngIf="!cargando && error">
+    <div class="error-state" *ngIf="!cargando && error">
 
-      <ion-icon
-        name="alert-circle-outline">
+      <ion-icon name="alert-circle-outline">
       </ion-icon>
 
       <p>
         {{ error }}
       </p>
 
-      <button
-        (click)="cargarConversaciones()">
+      <button (click)="cargarConversaciones()">
 
         Intentar nuevamente
 
@@ -158,14 +137,9 @@
 
 
     <!-- LISTA -->
-    <div
-      class="chat-list"
-      *ngIf="!cargando && !error">
+    <div class="chat-list" *ngIf="!cargando && !error">
 
-      <div
-        class="chat-item"
-        *ngFor="let chat of conversacionesFiltradas"
-        (click)="abrirChat(chat)">
+      <div class="chat-item" *ngFor="let chat of conversacionesFiltradas" (click)="abrirChat(chat)">
 
         <div class="avatar">
 
@@ -195,9 +169,7 @@
               {{ chat.mensaje }}
             </p>
 
-            <span
-              class="unread"
-              *ngIf="chat.noLeidos > 0">
+            <span class="unread" *ngIf="chat.noLeidos > 0">
 
               {{ chat.noLeidos }}
 
@@ -213,9 +185,7 @@
 
 
     <!-- ESTADO VACÍO -->
-    <div
-      class="empty-state"
-      *ngIf="
+    <div class="empty-state" *ngIf="
         !cargando &&
         !error &&
         conversacionesFiltradas.length === 0
@@ -223,8 +193,7 @@
 
       <div class="empty-icon">
 
-        <ion-icon
-          name="chatbubbles-outline">
+        <ion-icon name="chatbubbles-outline">
         </ion-icon>
 
       </div>
@@ -237,8 +206,7 @@
         Busca un contacto y comienza una nueva conversación.
       </p>
 
-      <button
-        (click)="irAContactos()">
+      <button (click)="irAContactos()">
 
         Buscar contactos
 
