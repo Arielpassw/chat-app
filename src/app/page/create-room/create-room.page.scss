@@ -1,0 +1,472 @@
+.create-room-content {
+  --background: var(--app-bg);
+  background: var(--app-bg);
+}
+
+.create-container {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100%;
+}
+
+/* =========================
+   ENCABEZADO
+========================= */
+
+.top-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.back-button {
+  width: 43px;
+  height: 43px;
+
+  border: 1px solid var(--app-border);
+  border-radius: 13px;
+
+  background: var(--app-surface);
+  color: var(--app-text-secondary);
+
+  font-size: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.back-button:hover {
+  background: var(--app-surface-2);
+  color: var(--app-text);
+}
+
+.back-button:active {
+  transform: scale(0.96);
+}
+
+.top-section span {
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.top-section h1 {
+  color: var(--app-text);
+  font-size: 25px;
+  font-weight: 750;
+  margin: 3px 0 0;
+}
+
+/* =========================
+   TARJETAS
+========================= */
+
+.section-card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border-soft);
+
+  border-radius: 17px;
+  padding: 18px;
+  margin-bottom: 17px;
+
+  box-shadow: var(--app-shadow-sm);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+
+  color: var(--app-primary);
+}
+
+.section-title ion-icon {
+  font-size: 21px;
+}
+
+.section-title h2 {
+  color: var(--app-text);
+  font-size: 15px;
+  margin: 0;
+  flex: 1;
+}
+
+.counter {
+  background: var(--app-primary-soft);
+  color: var(--app-primary);
+
+  padding: 5px 10px;
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================
+   FORMULARIO
+========================= */
+
+.section-card label {
+  display: block;
+
+  color: var(--app-text-secondary);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  margin-bottom: 9px;
+}
+
+.section-card input {
+  width: 100%;
+  height: 48px;
+
+  border: 1px solid var(--app-input-border);
+  border-radius: 12px;
+
+  padding: 0 13px;
+
+  outline: none;
+
+  background: var(--app-input-bg);
+  color: var(--app-input-text);
+
+  font-size: 14px;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.section-card input:focus {
+  border-color: var(--app-primary);
+  box-shadow: 0 0 0 3px var(--app-primary-soft);
+}
+
+.section-card input::placeholder {
+  color: var(--app-placeholder);
+}
+
+/* =========================
+   BUSCADOR
+========================= */
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  height: 48px;
+  padding: 0 12px;
+
+  background: var(--app-input-bg);
+  border: 1px solid var(--app-input-border);
+  border-radius: 12px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-box:focus-within {
+  border-color: var(--app-primary);
+  box-shadow: 0 0 0 3px var(--app-primary-soft);
+}
+
+.search-box ion-icon {
+  font-size: 19px;
+  color: var(--app-muted);
+}
+
+.search-box input {
+  border: none;
+  padding: 0;
+  height: 100%;
+  background: transparent;
+}
+
+.search-box input:focus {
+  border: none;
+  box-shadow: none;
+}
+
+/* =========================
+   CONTACTOS
+========================= */
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 11px;
+
+  background: var(--app-surface);
+  border: 1px solid var(--app-border-soft);
+
+  border-radius: 13px;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.contact-item:hover {
+  background: var(--app-surface-2);
+  border-color: var(--app-border);
+}
+
+.contact-item:active {
+  transform: scale(0.995);
+}
+
+/* =========================
+   AVATAR
+========================= */
+
+.avatar {
+  width: 43px;
+  height: 43px;
+  min-width: 43px;
+
+  border-radius: 50%;
+
+  background: var(--app-primary-soft);
+  color: var(--app-primary);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  border: 1px solid var(--app-border-soft);
+}
+
+/* =========================
+   INFORMACIÓN DEL CONTACTO
+========================= */
+
+.contact-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-info h3 {
+  margin: 0 0 4px;
+
+  color: var(--app-text);
+
+  font-size: 14px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contact-info p {
+  margin: 0;
+
+  color: var(--app-text-secondary);
+
+  font-size: 12px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================
+   BOTONES DE SELECCIÓN
+========================= */
+
+.select-button,
+.remove-button {
+  width: 38px;
+  height: 38px;
+
+  border: none;
+  border-radius: 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 19px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.select-button {
+  background: var(--app-surface-3);
+  color: var(--app-primary);
+}
+
+.select-button:hover {
+  background: var(--app-primary-soft);
+}
+
+.select-button.selected {
+  background: var(--app-success-soft);
+  color: var(--app-success);
+}
+
+.remove-button {
+  background: var(--app-danger-soft);
+  color: var(--app-danger);
+}
+
+.remove-button:hover {
+  filter: brightness(1.05);
+}
+
+.select-button:active,
+.remove-button:active {
+  transform: scale(0.92);
+}
+
+/* =========================
+   SELECCIONADOS
+========================= */
+
+.selected-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selected-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  color: var(--app-text-secondary);
+
+  font-size: 13px;
+}
+
+.selected-item span {
+  flex: 1;
+}
+
+/* =========================
+   MENSAJES
+========================= */
+
+.empty-text {
+  color: var(--app-muted);
+
+  font-size: 12px;
+  text-align: center;
+
+  padding: 12px 5px;
+
+  line-height: 1.5;
+}
+
+.error-message {
+  padding: 13px;
+
+  border-radius: 12px;
+
+  background: var(--app-danger-soft);
+  border: 1px solid var(--app-border-soft);
+
+  color: var(--app-danger);
+
+  font-size: 13px;
+
+  margin-bottom: 15px;
+
+  line-height: 1.4;
+}
+
+/* =========================
+   BOTÓN CREAR
+========================= */
+
+.create-button {
+  width: 100%;
+  height: 51px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: var(--app-primary);
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  margin: 5px 0 25px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease;
+}
+
+.create-button:hover:not(:disabled) {
+  background: var(--app-primary-hover);
+}
+
+.create-button:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.create-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 400px) {
+  .create-container {
+    padding: 14px;
+  }
+
+  .section-card {
+    padding: 14px;
+  }
+
+  .top-section {
+    gap: 12px;
+  }
+
+  .top-section h1 {
+    font-size: 23px;
+  }
+}

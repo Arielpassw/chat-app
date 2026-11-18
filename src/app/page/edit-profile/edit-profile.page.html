@@ -1,13 +1,40 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>edit-profile</ion-title>
+    <ion-button fill="clear" slot="start" (click)="volver()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-title>Editar perfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">edit-profile</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="edit-profile-content">
+  <div class="edit-profile-container">
+    <div *ngIf="cargando" class="state">Cargando perfil...</div>
+
+    <ng-container *ngIf="!cargando">
+      <div class="avatar-editor">
+        <div class="avatar-preview">
+          <img *ngIf="fotoUrl" [src]="fotoUrl" alt="Foto de perfil">
+          <ion-icon *ngIf="!fotoUrl" name="person-outline"></ion-icon>
+        </div>
+        <input #avatarInput type="file" hidden accept="image/jpeg,image/png,image/webp" (change)="seleccionarFoto($event)">
+        <ion-button fill="outline" (click)="avatarInput.click()">
+          <ion-icon name="image-outline" slot="start"></ion-icon>
+          Cambiar foto
+        </ion-button>
+        <small>JPG, PNG o WebP · máximo 5 MB</small>
+      </div>
+
+      <ion-input fill="outline" label="Nombre" label-placement="floating" [(ngModel)]="nombre"></ion-input>
+      <ion-input fill="outline" label="Username" label-placement="floating" [(ngModel)]="username"></ion-input>
+      <ion-input fill="outline" label="Estado" label-placement="floating" [(ngModel)]="estado" placeholder="Disponible"></ion-input>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+
+      <ion-button expand="block" (click)="guardar()" [disabled]="guardando">
+        <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+        {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+      </ion-button>
+    </ng-container>
+  </div>
 </ion-content>

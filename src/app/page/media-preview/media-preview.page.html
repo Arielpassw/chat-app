@@ -1,13 +1,39 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>media-preview</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="media-content">
+  <div class="media-container">
+    <div class="top-section">
+      <button class="back-button" (click)="volverChat()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div class="page-title">
+        <span>ARCHIVO MULTIMEDIA</span>
+        <h1>Vista previa</h1>
+      </div>
+    </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">media-preview</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <div class="preview-card">
+      <div class="image-preview" *ngIf="url">
+        <img [src]="url" [alt]="archivo?.name || 'Imagen seleccionada'" />
+      </div>
+      <div class="file-information">
+        <div class="file-icon"><ion-icon name="image-outline"></ion-icon></div>
+        <div class="file-details">
+          <h2>{{ archivo?.name || 'Archivo' }}</h2>
+          <p>{{ archivo?.type?.startsWith('image/') ? 'Imagen' : 'Archivo' }} · {{ tamano }}</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="error-message" *ngIf="error">{{ error }}</p>
+
+    <div class="actions-section">
+      <button class="cancel-button" (click)="cancelar()">
+        <ion-icon name="close-outline"></ion-icon>
+        Cancelar
+      </button>
+      <button class="send-button" (click)="enviarArchivo()" [disabled]="!archivo || !chatId || enviando">
+        <ion-icon name="send-outline"></ion-icon>
+        {{ enviando ? 'Enviando...' : 'Enviar archivo' }}
+      </button>
+    </div>
+  </div>
 </ion-content>

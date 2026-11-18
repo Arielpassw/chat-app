@@ -1,0 +1,195 @@
+.register-content {
+  --background: var(--app-bg);
+  background: var(--app-bg);
+}
+
+.register-container {
+  min-height: 100%;
+  padding: 28px 24px;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+/* ---------- CABECERA ---------- */
+
+.header-section {
+  margin-bottom: 32px;
+}
+
+.back-button {
+  --color: var(--app-primary);
+
+  margin-left: -12px;
+  margin-bottom: 10px;
+
+  font-size: 24px;
+}
+
+.header-section h1 {
+  margin: 0;
+
+  color: var(--app-text);
+
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.header-section p {
+  margin-top: 8px;
+
+  color: var(--app-text-secondary);
+
+  font-size: 15px;
+}
+
+/* ---------- FORMULARIO ---------- */
+
+.form-section {
+  width: 100%;
+}
+
+.input-group {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 18px;
+}
+
+/* Iconos */
+
+.input-group > ion-icon {
+  position: absolute;
+  left: 15px;
+
+  z-index: 5;
+
+  font-size: 20px;
+
+  color: var(--app-primary);
+}
+
+/* Inputs */
+
+.input-group ion-input {
+  width: 100%;
+
+  --background: var(--app-input-bg);
+  --color: var(--app-input-text);
+
+  --border-color: var(--app-input-border);
+  --border-width: 1px;
+  --border-style: solid;
+  --border-radius: 14px;
+
+  --highlight-color-focused: var(--app-primary);
+
+  --padding-start: 48px;
+  --padding-end: 48px;
+
+  --placeholder-color: var(--app-placeholder);
+  --placeholder-opacity: 1;
+}
+
+/* Etiqueta */
+
+.input-group ion-input::part(label) {
+  color: var(--app-text-secondary);
+}
+
+/* Input enfocado */
+
+.input-group ion-input.has-focus {
+  --border-color: var(--app-primary);
+}
+
+/* ---------- PASSWORD ---------- */
+
+.password-button {
+  position: absolute;
+
+  right: 2px;
+
+  z-index: 10;
+
+  --color: var(--app-text-secondary);
+  --background: transparent;
+
+  margin: 0;
+}
+
+/* ---------- MENSAJES ---------- */
+
+.error-message,
+.success-message {
+  margin: 4px 4px 12px;
+
+  font-size: 14px;
+}
+
+.error-message {
+  color: var(--app-danger);
+}
+
+.success-message {
+  color: var(--app-success);
+}
+
+/* ---------- BOTÓN REGISTRO ---------- */
+
+.register-button {
+  --background: var(--app-primary);
+  --background-hover: var(--app-primary-hover);
+  --background-activated: var(--app-primary-hover);
+
+  --border-radius: 14px;
+
+  height: 52px;
+  margin-top: 10px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  box-shadow: var(--app-shadow-md);
+}
+
+.register-button ion-spinner {
+  width: 22px;
+  height: 22px;
+}
+
+/* ---------- LOGIN ---------- */
+
+.login-section {
+  text-align: center;
+
+  margin-top: 30px;
+}
+
+.login-section p {
+  display: inline;
+
+  color: var(--app-text-secondary);
+
+  font-size: 14px;
+}
+
+.login-section ion-button {
+  --color: var(--app-primary);
+
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 400px) {
+  .register-container {
+    padding: 24px 18px;
+  }
+
+  .header-section h1 {
+    font-size: 28px;
+  }
+}
