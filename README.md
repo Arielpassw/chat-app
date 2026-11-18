@@ -1,603 +1,313 @@
-# Chat App — Aplicación móvil de mensajería
+# Chat App
 
-Aplicación móvil de mensajería desarrollada con **Ionic**, **Angular** y **Capacitor**, utilizando **Supabase** como plataforma principal de backend y **Firebase Cloud Messaging (FCM)** para el envío de notificaciones push.
+Aplicación móvil de mensajería construida con **Ionic**, **Angular standalone** y **Capacitor**. **Supabase** proporciona autenticación, persistencia, almacenamiento y actualizaciones en tiempo real; **Firebase Cloud Messaging (FCM)** se utiliza para las notificaciones push en Android.
 
-El proyecto permite establecer la infraestructura necesaria para gestionar usuarios, perfiles, conversaciones, mensajes, archivos multimedia y comunicación en tiempo real.
+> **Estado del aprovisionamiento:** el repositorio contiene la aplicación, la configuración de Supabase CLI y una Edge Function, pero no contiene migraciones SQL, scripts de creación de tablas ni políticas RLS. Para un proyecto Supabase nuevo, el esquema y sus políticas deben crearse antes de que funcionen las operaciones de datos. Este README describe el contrato que utiliza el código; no sustituye los scripts SQL que aún no están versionados.
 
----
+## Objetivo
 
-## 1. Información general
+Ofrecer una aplicación móvil para comunicarse mediante conversaciones individuales y grupales, con soporte para perfiles, mensajes, archivos, imágenes y ubicación compartida. La arquitectura separa la experiencia de usuario y las funciones nativas (Ionic/Angular/Capacitor) de los servicios backend (Supabase) y de las notificaciones push (FCM).
 
-| Característica | Descripción |
-| :--- | :--- |
-| **Nombre del proyecto** | Chat App |
-| **Tipo de aplicación** | Aplicación móvil de mensajería |
-| **Framework** | Ionic + Angular |
-| **Lenguaje** | TypeScript |
-| **Plataforma móvil** | Android |
-| **Entorno de ejecución** | Capacitor |
-| **Backend** | Supabase |
-| **Base de datos** | PostgreSQL |
-| **Autenticación** | Supabase Auth |
-| **Almacenamiento** | Supabase Storage |
-| **Tiempo real** | Supabase Realtime |
-| **Notificaciones push** | Firebase Cloud Messaging |
-| **Funciones backend adicionales** | Supabase Edge Functions |
+## Características
 
----
+- Registro, inicio de sesión, cierre de sesión y recuperación de contraseña con Supabase Auth.
+- Perfiles editables y búsqueda/listado de usuarios.
+- Creación y consulta de conversaciones individuales y grupales, con participantes y roles.
+- Envío, consulta, edición y eliminación lógica de mensajes.
+- Recepción de cambios de mensajes mediante Supabase Realtime.
+- Subida de avatares e imágenes/archivos de chat a Supabase Storage.
+- Obtención de enlaces firmados para descargar/ver archivos de chats privados.
+- Obtención y envío de coordenadas de ubicación.
+- Registro de dispositivos Android y envío de notificaciones push por FCM.
+- Preferencias locales (incluido el tema oscuro) mediante Capacitor Preferences.
+- Pantallas adaptables de acceso, conversaciones, contactos, salas, perfil, configuración y vista previa de medios.
 
-## 2. Tecnologías utilizadas
+## Tecnologías
 
-### Frontend y aplicación móvil
-* **Ionic Angular:** desarrollo de interfaces móviles.
-* **Angular:** arquitectura de componentes y servicios.
-* **TypeScript:** lenguaje principal.
-* **Capacitor:** integración con funcionalidades nativas de Android.
-* **Capacitor Preferences:** almacenamiento de preferencias locales.
-* **Capacitor Geolocation:** acceso a la ubicación del dispositivo.
-* **@capacitor-firebase/messaging:** integración con Firebase Cloud Messaging.
+| Tecnología | Función en el proyecto |
+| --- | --- |
+| Ionic Angular | Componentes y experiencia de interfaz móvil. |
+| Angular standalone | Componentes, rutas con carga diferida e inyección de servicios. |
+| TypeScript | Lenguaje de la aplicación y sus modelos. |
+| Capacitor | Empaquetado e integración con Android y sus capacidades nativas. |
+| Supabase Auth | Registro, acceso y sesión de usuarios. |
+| Supabase Database (PostgreSQL) | Perfiles, conversaciones, participantes, mensajes y tokens de dispositivos. |
+| Supabase Realtime | Notificación de cambios de la tabla de mensajes. |
+| Supabase Storage | Avatares y adjuntos de conversaciones. |
+| Supabase Edge Functions | Lógica de servidor para procesar las solicitudes de notificación. |
+| Firebase Cloud Messaging | Entrega de notificaciones push a dispositivos; no gestiona los datos ni los archivos de la aplicación. |
+| Capacitor Geolocation / Preferences | Ubicación del dispositivo y preferencias locales. |
+| Vitest / Playwright | Pruebas unitarias y pruebas de extremo a extremo. |
 
-### Backend y servicios
-* **Supabase:** plataforma principal de backend.
-* **PostgreSQL:** gestión de la información.
-* **Supabase Auth:** registro, autenticación y administración de sesiones.
-* **Supabase Storage:** almacenamiento de imágenes y archivos.
-* **Supabase Realtime:** recepción de cambios en tiempo real.
-* **Supabase Edge Functions:** ejecución de operaciones del lado del servidor.
-* **Firebase Cloud Messaging:** envío de notificaciones push a dispositivos Android.
-
-> **Distribución de responsabilidades:** Supabase administra los usuarios, perfiles, chats, mensajes y archivos. Firebase se utiliza exclusivamente para las notificaciones push mediante FCM.
-
----
-
-## 3. Arquitectura del sistema
-
-La aplicación utiliza una arquitectura cliente-servidor.
+## Arquitectura y flujos
 
 ```text
-                    APLICACIÓN MÓVIL
-                   Ionic + Angular
-                          |
-                          |
-                 Servicios de Angular
-                          |
-          +---------------+---------------+
-          |               |               |
-          v               v               v
-     Supabase Auth   Supabase DB    Supabase Storage
-          |               |               |
-          v               v               v
-       Usuarios       PostgreSQL       Archivos
-                      y perfiles
-                          |
-                          v
-                   Supabase Realtime
-                          |
-                          v
-                  Mensajes en tiempo real
+Aplicación Ionic / Angular
+    ├── Supabase Auth ─────────────── identidad y sesión
+    ├── Supabase Database ────────── perfiles, chats y mensajes
+    ├── Supabase Realtime ────────── cambios de mensajes
+    ├── Supabase Storage ─────────── avatares y archivos
+    └── Capacitor ────────────────── Android, ubicación, preferencias y FCM
+
+Flujo push:
+Aplicación → Edge Function de Supabase → Firebase Cloud Messaging → Android
 ```
 
-### Flujo de notificaciones push
+Los servicios Angular encapsulan las operaciones backend y las pantallas los consumen. Tras guardar un mensaje, la aplicación puede llamar a la Edge Function `enviar-notificacion`. Esta función valida la sesión y que el mensaje pertenezca al remitente, obtiene los tokens de los demás participantes desde Supabase y solicita el envío a FCM. La credencial privada de Firebase se mantiene en los secretos del servidor de Supabase, no en la aplicación.
+
+## Estructura principal
 
 ```text
-             Aplicación Android
-                    |
-                    v
-             Firebase Messaging
-                    |
-                    v
-              Token FCM
-                    |
-                    v
-              Supabase DB
-               fcm_tokens
-                    |
-                    v
-          Supabase Edge Function
-            enviar-notificacion
-                    |
-                    v
-          Firebase Cloud Messaging
-                    |
-                    v
-             Dispositivo receptor
-```
-
-### Responsabilidades de cada plataforma
-
-| Plataforma | Responsabilidad |
-| :--- | :--- |
-| **Ionic Angular** | Interfaz y lógica del cliente |
-| **Capacitor** | Funcionalidades nativas del dispositivo |
-| **Supabase Auth** | Autenticación de usuarios |
-| **Supabase Database** | Información de usuarios, chats y mensajes |
-| **Supabase Storage** | Archivos, imágenes y avatares |
-| **Supabase Realtime** | Actualizaciones en tiempo real |
-| **Supabase Edge Functions** | Procesamiento seguro de operaciones del servidor |
-| **Firebase Cloud Messaging** | Notificaciones push |
-
----
-
-## 4. Estructura del proyecto
-
-La organización principal del código se encuentra dentro de `src/app`.
-
-```text
-chat-app/
-│
-├── android/
-│   └── app/
-│       └── google-services.json
-│
+.
+├── android/                         Proyecto nativo Android de Capacitor
+├── e2e/                             Pruebas Playwright
 ├── src/
 │   ├── app/
-│   │   ├── guards/
-│   │   │   └── auth-guard.ts
-│   │   │
-│   │   ├── models/
-│   │   │   ├── archivo.model.ts
-│   │   │   ├── mensaje.model.ts
-│   │   │   ├── sala.model.ts
-│   │   │   └── usuario.model.ts
-│   │   │
-│   │   ├── services/
-│   │   │   ├── auth.ts
-│   │   │   ├── chat.ts
-│   │   │   ├── notificaciones.ts
-│   │   │   ├── preferencias.ts
-│   │   │   ├── sala.ts
-│   │   │   ├── storage.ts
-│   │   │   ├── supabase.ts
-│   │   │   ├── ubicacion.ts
-│   │   │   └── usuario.ts
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── login/
-│   │   │   ├── registro/
-│   │   │   ├── chats/
-│   │   │   └── ...
-│   │   │
-│   │   ├── app.component.ts
-│   │   └── app.routes.ts
-│   │
-│   └── environments/
-│       ├── environment.example.ts
-│       └── environment.prod.example.ts
-│
+│   │   ├── guards/                  Protección de rutas
+│   │   ├── models/                  Modelos de usuario, sala, mensaje y archivo
+│   │   ├── page/                    Pantallas standalone de la aplicación
+│   │   ├── services/                Servicios Auth, chat, sala, Storage, FCM, etc.
+│   │   ├── app.routes.ts            Rutas
+│   │   └── app.component.ts         Componente raíz y deep links de autenticación
+│   └── environments/                Plantillas de configuración de la aplicación
 ├── supabase/
-│   ├── .gitignore
-│   ├── config.toml
-│   │
+│   ├── config.toml                  Configuración local de Supabase CLI
 │   └── functions/
-│       └── enviar-notificacion/
-│           ├── index.ts
-│           ├── deno.json
-│           └── .npmrc
-│
-├── capacitor.config.ts
-├── ionic.config.json
-├── package.json
-└── README.md
+│       └── enviar-notificacion/     Edge Function de notificaciones push
+├── capacitor.config.ts              Identificador y directorio web de Capacitor
+├── angular.json                     Configuración de compilación y pruebas Angular
+├── package.json                     Dependencias y comandos npm
+└── Backend.md                       Referencia técnica complementaria del backend
 ```
 
-> *Nota: La estructura de `pages/` puede ampliarse conforme se integren las funcionalidades del frontend.*
+Las pantallas se encuentran en `src/app/page/` (singular). Los archivos `src/environments/environment.ts` y `src/environments/environment.prod.ts` son configuraciones locales ignoradas por Git; las plantillas versionadas son `environment.example.ts` y `environment.prod.example.ts`.
 
----
+## Requisitos previos
 
-## 5. Servicios del backend
+- Git.
+- Node.js compatible con Angular 22 y npm (se recomienda Node.js 22).
+- Para Android: Android Studio, Android SDK (API 36 configurada por el proyecto) y Java/JDK 17 o posterior.
+- Un proyecto Supabase con Auth, Database, Realtime y Storage.
+- Para notificaciones Android: un proyecto Firebase con Firebase Cloud Messaging habilitado y una aplicación Android con identificador `io.ionic.starter`.
+- Supabase CLI, solo para enlazar el proyecto y desplegar la Edge Function.
 
-Los servicios centralizan las operaciones que realiza la aplicación con Supabase y las funcionalidades nativas del dispositivo.
+## Instalación y ejecución
 
-| Servicio | Responsabilidad |
-| :--- | :--- |
-| `supabase.ts` | Inicialización y acceso al cliente de Supabase |
-| `auth.ts` | Registro, inicio de sesión, cierre de sesión y sesiones |
-| `usuario.ts` | Administración y consulta de perfiles |
-| `sala.ts` | Creación y administración de chats y participantes |
-| `chat.ts` | Envío, consulta, edición, eliminación y recepción de mensajes |
-| `storage.ts` | Subida, consulta y eliminación de archivos |
-| `notificaciones.ts` | Permisos, tokens FCM y escucha de notificaciones |
-| `ubicacion.ts` | Acceso a la ubicación del dispositivo |
-| `preferencias.ts` | Administración de preferencias locales |
+1. Clona el repositorio y entra al directorio:
 
-### 5.1. Autenticación
-El servicio `Auth` utiliza Supabase Auth.
-* Registrar usuarios.
-* Iniciar sesión mediante correo y contraseña.
-* Cerrar sesión.
-* Obtener la sesión actual.
-* Consultar el usuario autenticado.
-* Recuperar contraseñas.
-* Escuchar cambios en el estado de autenticación.
+   ```bash
+   git clone https://github.com/Arielpassw/chat-app.git
+   cd chat-app
+   ```
 
-> *Los perfiles se crean automáticamente mediante un trigger de PostgreSQL asociado al registro de usuarios.*
+2. Instala las dependencias con el lockfile:
 
-### 5.2. Usuarios y perfiles
-El servicio `UsuarioService` permite:
-* Crear perfiles cuando sea necesario.
-* Consultar el perfil del usuario autenticado.
-* Consultar perfiles por identificador.
-* Actualizar información personal.
-* Buscar usuarios por nombre o username (utiliza la función PostgreSQL `buscar_perfiles`).
+   ```bash
+   npm ci
+   ```
 
-### 5.3. Salas y conversaciones
-El servicio `SalaService` permite:
-* Crear conversaciones individuales y grupales.
-* Consultar las conversaciones del usuario.
-* Agregar participantes.
-* Consultar los participantes de una conversación.
-* Actualizar información de una sala.
-* Actualizar la última lectura de mensajes.
+3. Crea los archivos de configuración locales a partir de las plantillas, si todavía no existen. En PowerShell:
 
-> *La creación inicial de una sala y su administrador utiliza la función transaccional `crear_sala_transaccional`.*
+   ```powershell
+   if (-not (Test-Path src\environments\environment.ts)) {
+     Copy-Item src\environments\environment.example.ts src\environments\environment.ts
+   }
+   if (-not (Test-Path src\environments\environment.prod.ts)) {
+     Copy-Item src\environments\environment.prod.example.ts src\environments\environment.prod.ts
+   }
+   ```
 
-### 5.4. Mensajes
-El servicio `ChatService` gestiona las operaciones de mensajería:
-* Enviar mensajes.
-* Consultar mensajes de una conversación.
-* Editar mensajes.
-* Eliminar mensajes mediante eliminación lógica.
-* Escuchar nuevos mensajes y cambios mediante Supabase Realtime.
-* Dejar de escuchar una conversación.
-* Cerrar todos los canales de tiempo real.
+   En macOS/Linux se pueden copiar manualmente los dos archivos de plantilla con `cp`. Completa los valores siguiendo la siguiente sección.
 
-**Tipos de mensajes contemplados:**
+4. Aprovisiona el esquema, políticas y buckets en Supabase (ver [Configuración de Supabase](#configuración-de-supabase)).
+5. Inicia la aplicación web:
 
-| Tipo | Descripción |
-| :--- | :--- |
-| `texto` | Mensaje de texto |
-| `imagen` | Imagen compartida |
-| `archivo` | Documento o archivo adjunto |
-| `ubicacion` | Ubicación geográfica |
+   ```bash
+   npm start
+   ```
 
-### 5.5. Almacenamiento de archivos
-El servicio `StorageService` utiliza Supabase Storage con dos buckets configurados:
+   Angular sirve la aplicación en `http://localhost:4200`.
 
-| Bucket | Visibilidad | Límite |
-| :--- | :--- | :--- |
-| `avatars` | Público | 5 MB |
-| `chat-files` | Privado | 20 MB |
+## Configuración del entorno
 
-**Organización de archivos:**
+La aplicación lee la configuración de `src/environments/environment.ts`. La compilación de producción sustituye ese archivo por `src/environments/environment.prod.ts`, según `angular.json`.
+
+Ejemplo ilustrativo, sin valores de acceso reales:
+
+```typescript
+export const environment = {
+  production: false,
+  supabase: {
+    url: 'https://TU_PROYECTO.supabase.co',
+    anonKey: 'TU_CLAVE_PUBLICA_SUPABASE'
+  },
+  firebase: {
+    apiKey: 'TU_FIREBASE_API_KEY',
+    authDomain: 'TU_PROYECTO.firebaseapp.com',
+    projectId: 'TU_FIREBASE_PROJECT_ID',
+    storageBucket: 'TU_FIREBASE_STORAGE_BUCKET',
+    messagingSenderId: 'TU_FIREBASE_MESSAGING_SENDER_ID',
+    appId: 'TU_FIREBASE_APP_ID'
+  }
+};
+```
+
+- `supabase.url`: URL del proyecto Supabase.
+- `supabase.anonKey`: clave pública/publishable del cliente Supabase. No es una clave administrativa; los permisos deben protegerse con RLS.
+- Los campos `firebase` aparecen en las plantillas, pero el código TypeScript actual no los consulta. La integración Android usa el plugin `@capacitor-firebase/messaging` y la configuración nativa de Firebase (`google-services.json`).
+
+Los archivos de entorno reales están excluidos de Git. No incluyas en el frontend ni en el repositorio la clave `service_role`, claves privadas de Firebase ni secretos de servidor. Si una clave privada se expone por error, rótala.
+
+## Configuración de Supabase
+
+### 1. Autenticación
+
+En el panel de Supabase habilita el proveedor de correo y contraseña. El servicio implementa registro, inicio/cierre de sesión y recuperación de contraseña. El flujo de registro solicita el callback móvil:
 
 ```text
-avatars/
-└── user_id/
-    └── imagen.jpg
-
-chat-files/
-└── chat_id/
-    └── user_id/
-        └── documento.pdf
+io.ionic.starter://login-callback
 ```
 
-**Operaciones contempladas:**
-* Subir avatares.
-* Subir archivos a conversaciones.
-* Obtener URLs firmadas para archivos privados.
-* Obtener URLs de avatares.
-* Eliminar archivos y avatares.
+Añádelo a las URL de redirección permitidas de Auth. La aplicación procesa el enlace entrante y canjea el código para establecer la sesión. Configura la confirmación de correo de acuerdo con las pruebas que vayas a realizar.
 
-> **Importante:** Los mensajes deben almacenar la ruta del archivo en Storage, no una URL firmada temporal que pueda expirar.
+### 2. Esquema de base de datos esperado
 
-### 5.6. Notificaciones push
-El servicio `NotificacionesService` utiliza el plugin de Firebase Messaging para Android y se encarga de:
-* Solicitar permisos de notificaciones.
-* Obtener el token FCM del dispositivo.
-* Registrar el token en Supabase (tabla `fcm_tokens`).
-* Actualizar tokens cuando cambien.
-* Escuchar notificaciones recibidas.
-* Escuchar las acciones realizadas sobre las notificaciones.
+Los servicios consultan las siguientes tablas y columnas. Los nombres se muestran tal como los usa el código/modelo; pueden requerirse columnas adicionales, claves foráneas, restricciones e índices en la instancia real.
 
-### 5.7. Ubicación y preferencias
-* **Ubicación:** El servicio `UbicacionService` permite acceder a la ubicación del dispositivo mediante Capacitor Geolocation.
-* **Preferencias:** El servicio `PreferenciasService` utiliza Capacitor Preferences para conservar configuraciones locales de la aplicación.
+| Tabla | Campos utilizados por la aplicación |
+| --- | --- |
+| `profiles` | `id`, `nombre`, `username`, `email`, `foto_url`, `estado`, `creado_en`, `actualizado_en` |
+| `chats` | `id`, `nombre`, `tipo`, `imagen_url`, `creado_por`, `creado_en`, `actualizado_en` |
+| `chat_participants` | `id`, `chat_id`, `user_id`, `rol`, `unido_en`, `ultimo_mensaje_leido` |
+| `messages` | `id`, `chat_id`, `sender_id`, `contenido`, `tipo`, `archivo_url`, `archivo_nombre`, `archivo_tamano`, `latitud`, `longitud`, `editado_en`, `eliminado_en`, `creado_en` |
+| `fcm_tokens` | `id`, `user_id`, `token`, `plataforma`, `creado_en`, `actualizado_en` |
 
----
+La aplicación también invoca las funciones PostgreSQL `buscar_perfiles(p_busqueda)` y `crear_sala_transaccional(p_nombre, p_tipo, p_imagen_url)`. La documentación backend refiere además a `handle_new_user()`, `is_chat_member()` e `is_chat_creator()`. El registro de Auth y la búsqueda/creación de salas dependen de que las funciones y relaciones esperadas estén instaladas.
 
-## 6. Base de datos
+**No hay migraciones ni seeds SQL versionados en `supabase/`**, por lo que el esquema no se crea con `supabase db push` en este repositorio. Antes de probar, crea las tablas, funciones, relaciones, restricciones y permisos necesarios en la base de datos del proyecto. Mantén ese esquema bajo control de versiones en migraciones SQL como mejora del proyecto.
 
-La base de datos utiliza PostgreSQL administrado por Supabase.
+### 3. Row Level Security (RLS)
 
-### Tablas principales
+Activa RLS en las tablas expuestas por la API y configura políticas para las operaciones que necesita la aplicación. Como mínimo, las políticas deben garantizar que:
 
-#### `profiles`
-Almacena la información de los perfiles (se relaciona 1:1 con `auth.users`).
+- Un usuario solo pueda modificar su propio perfil.
+- La lectura de perfiles y la búsqueda sean compatibles con las reglas de privacidad decididas para la aplicación.
+- Solo miembros de una conversación puedan leer sus participantes y mensajes.
+- Los mensajes se creen con el usuario autenticado como remitente; cada usuario solo pueda editar/eliminar sus propios mensajes.
+- Los usuarios solo puedan crear/actualizar los tokens FCM que les pertenecen.
+- Las funciones RPC y políticas de Storage validen pertenencia a chats cuando corresponda.
 
-| Campo | Descripción |
-| :--- | :--- |
-| `id` | Identificador del usuario |
-| `nombre` | Nombre del usuario |
-| `username` | Nombre de usuario único |
-| `email` | Correo electrónico |
-| `foto_url` | Imagen de perfil |
-| `estado` | Estado del usuario |
-| `creado_en` | Fecha de creación |
-| `actualizado_en` | Última actualización |
+El repositorio no incluye las definiciones SQL de estas políticas. No desactives RLS como solución temporal y no uses una clave administrativa en el cliente.
 
-#### `chats`
-Almacena las conversaciones.
+### 4. Realtime
 
-| Campo | Descripción |
-| :--- | :--- |
-| `id` | Identificador del chat |
-| `nombre` | Nombre de la conversación |
-| `tipo` | Individual o grupal |
-| `imagen_url` | Imagen de la conversación |
-| `creado_por` | Usuario creador |
-| `creado_en` | Fecha de creación |
-| `actualizado_en` | Última actualización |
+`ChatService` se suscribe a eventos `INSERT`, `UPDATE` y `DELETE` de `public.messages`, filtrados por `chat_id`. Habilita `messages` para Realtime (publicación `supabase_realtime`) en la configuración de la base de datos y verifica que las políticas permitan al usuario autenticado recibir los cambios de sus conversaciones.
 
-#### `chat_participants`
-Relaciona usuarios con conversaciones.
+### 5. Storage
 
-| Campo | Descripción |
-| :--- | :--- |
-| `id` | Identificador del registro |
-| `chat_id` | Identificador de la conversación |
-| `user_id` | Identificador del usuario |
-| `rol` | Administrador o miembro |
-| `unido_en` | Fecha de incorporación |
-| `ultimo_mensaje_leido` | Último mensaje leído |
+Crea en Supabase Storage los buckets que el servicio utiliza:
 
-#### `messages`
-Almacena los mensajes enviados.
+| Bucket | Acceso esperado | Límite validado por el cliente |
+| --- | --- | --- |
+| `avatars` | Público (URL pública de avatar) | 5 MB; JPEG, PNG o WebP |
+| `chat-files` | Privado (URL firmada para acceso temporal) | 20 MB |
 
-| Campo | Descripción |
-| :--- | :--- |
-| `id` | Identificador del mensaje |
-| `chat_id` | Conversación asociada |
-| `sender_id` | Usuario remitente |
-| `contenido` | Contenido del mensaje |
-| `tipo` | Tipo de mensaje |
-| `archivo_url` | Ruta del archivo |
-| `archivo_nombre` | Nombre del archivo |
-| `archivo_tamano` | Tamaño del archivo |
-| `latitud` | Coordenada geográfica |
-| `longitud` | Coordenada geográfica |
-| `editado_en` | Fecha de edición |
-| `eliminado_en` | Fecha de eliminación lógica |
-| `creado_en` | Fecha de creación |
+Los archivos se organizan por usuario o conversación. Define también las políticas de Storage: los usuarios deben gestionar su propio avatar y solo los participantes autorizados deben cargar/leer/eliminar archivos de un chat. Los límites de tamaño que valida Angular no reemplazan la configuración de límites y políticas del bucket en Supabase. Las rutas de archivos, no las URL firmadas temporales, se guardan en los mensajes.
 
-#### `fcm_tokens`
-Almacena los tokens de los dispositivos registrados para recibir notificaciones.
+## Configuración de Firebase Cloud Messaging
 
-| Campo | Descripción |
-| :--- | :--- |
-| `id` | Identificador del registro |
-| `user_id` | Usuario propietario |
-| `token` | Token de Firebase Cloud Messaging |
-| `plataforma` | Plataforma del dispositivo |
-| `creado_en` | Fecha de registro |
-| `actualizado_en` | Última actualización |
+FCM se utiliza exclusivamente para enviar notificaciones push; los datos, autenticación y archivos permanecen en Supabase.
 
-### Relaciones principales
+1. Crea/configura un proyecto Firebase, habilita Cloud Messaging y registra una aplicación Android con el identificador de paquete `io.ionic.starter`.
+2. Descarga el archivo de configuración Android `google-services.json` y colócalo en `android/app/google-services.json`.
+3. Configura la cuenta de servicio de Firebase para permitir el envío de mensajes FCM v1.
+4. Guarda el JSON de la cuenta de servicio como secreto `FIREBASE_SERVICE_ACCOUNT` en la configuración de secretos del proyecto Supabase. No lo pongas en `environment.ts`, `google-services.json`, el cliente móvil ni Git.
+5. Despliega la función desde la raíz del proyecto:
 
-```text
-auth.users
-    |
-    | 1:1
-    v
-profiles
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref TU_PROJECT_REF
+   npx supabase functions deploy enviar-notificacion
+   ```
 
-profiles
-    |
-    | 1:N
-    v
-chat_participants
-    |
-    | N:1
-    v
-chats
-    |
-    | 1:N
-    v
-messages
+   La configuración de `supabase/config.toml` desactiva la verificación JWT del gateway para esta función; el código de la función valida la sesión de usuario. No elimines esa validación.
 
-profiles
-    |
-    | 1:N
-    v
-fcm_tokens
-```
+La aplicación solicita permiso de notificaciones en Android y registra el token del dispositivo en `fcm_tokens`. La recepción push requiere probar en Android con un proyecto Firebase correctamente configurado; la funcionalidad no se ejecuta en el navegador.
 
----
+## Comandos
 
-## 7. Seguridad de la información
+| Tarea | Comando |
+| --- | --- |
+| Servidor de desarrollo | `npm start` |
+| Compilación (producción por defecto) | `npm run build` |
+| Compilación de desarrollo | `npm run build -- --configuration development` |
+| Pruebas unitarias (Vitest) | `npm run test:unit` |
+| Pruebas E2E (Playwright, perfil Pixel 7) | `npm run test:e2e` |
+| Lint, chequeo E2E y formato | `npm run lint` |
+| Compilar y sincronizar Android | `npx cap sync android` |
+| Abrir el proyecto Android | `npx cap open android` |
 
-La seguridad se administra principalmente mediante **Row Level Security (RLS)** de PostgreSQL.
+### Generar una APK debug
 
-**Políticas implementadas:**
-* Cada usuario puede consultar y actualizar su propio perfil.
-* Los usuarios autenticados pueden buscar perfiles mediante la función autorizada.
-* Los participantes pueden consultar los mensajes de sus conversaciones.
-* Los usuarios solo pueden enviar mensajes como ellos mismos y editar únicamente los propios.
-* Los participantes pueden acceder a los archivos de sus conversaciones respetando las políticas de Storage.
-* Los usuarios solo pueden administrar sus propios avatares.
+Desde PowerShell, en la raíz:
 
-**Funciones de apoyo:**
-* `is_chat_member`
-* `is_chat_creator`
-
-> **Seguridad crítica:** Las claves privadas, credenciales de servicio y secretos nunca deben incluirse en el código del frontend ni publicarse en GitHub.
-
----
-
-## 8. Notificaciones mediante Supabase Edge Functions
-
-La función `enviar-notificacion` se encarga de procesar las notificaciones push.
-
-### Funcionamiento
-1. El usuario autenticado envía un mensaje.
-2. La aplicación obtiene el identificador del chat y del mensaje.
-3. Se invoca la Edge Function.
-4. La función verifica que el mensaje exista y pertenezca al usuario autenticado.
-5. Consulta los participantes de la conversación.
-6. Recupera los tokens FCM de los demás participantes.
-7. Obtiene un token OAuth de Google utilizando la cuenta de servicio configurada.
-8. Envía las notificaciones mediante Firebase Cloud Messaging.
-
-### Endpoint
-```http
-POST https://fhhnvzzsvdqngnodvrtj.supabase.co/functions/v1/enviar-notificacion
-```
-
-### Autenticación y encabezados
-```http
-Authorization: Bearer ACCESS_TOKEN
-Content-Type: application/json
-```
-
-### Cuerpo de la solicitud
-```json
-{
-  "chat_id": "UUID_DEL_CHAT",
-  "message_id": "UUID_DEL_MENSAJE"
-}
-```
-
-### Ejemplo de respuesta exitosa
-```json
-{
-  "success": true,
-  "enviados": 1,
-  "fallidos": 0,
-  "total": 1
-}
-```
-> *Los valores anteriores son ilustrativos; la cantidad real depende de los dispositivos registrados y de los resultados de FCM.*
-
-### Secreto requerido y despliegue
-La función requiere el secreto `FIREBASE_SERVICE_ACCOUNT` configurado directamente en Supabase (nunca en el repositorio).
-
-Para desplegar con Supabase CLI:
-```bash
-npx supabase login
-npx supabase link --project-ref TU_PROJECT_REF
-npx supabase functions deploy enviar-notificacion --no-verify-jwt
-```
-> *La opción `--no-verify-jwt` se utiliza porque la autenticación de usuario es validada dentro de la función mediante `withSupabase({ auth: "user" })`.*
-
----
-
-## 9. Configuración del entorno de desarrollo
-
-### Requisitos previos
-* Node.js 22 y npm
-* Ionic CLI y Angular CLI
-* Android Studio, Android SDK y Java 17
-* Cuenta de Supabase y Supabase CLI
-* Proyecto de Firebase configurado para FCM
-
-### Instalación
-```bash
-# Clonar el repositorio
-git clone https://github.com/Arielpassw/chat-app.git
-
-# Entrar al proyecto
-cd chat-app
-
-# Cambiar a la rama de backend
-git switch feature/backend
-
-# Instalar dependencias
-npm install
-```
-
-### Configuración de variables de entorno
-Crear los archivos locales copiando las plantillas existentes:
-* `src/environments/environment.example.ts` $\rightarrow$ `src/environments/environment.ts`
-* `src/environments/environment.prod.example.ts` $\rightarrow$ `src/environments/environment.prod.ts`
-
-Configurar los datos de Supabase y Firebase según las propiedades definidas. **No publicar los archivos reales de entorno.**
-
-### Configuración de Firebase para Android
-Ubicar el archivo de configuración descargado de Firebase en:
-```text
-android/app/google-services.json
-```
-*(No confundir este archivo cliente con la cuenta de servicio privada utilizada por la Edge Function).*
-
-### Comandos de ejecución y compilación
-```bash
-# Ejecutar en desarrollo web
-ionic serve
-
-# Compilar la aplicación
-ionic build
-
-# Sincronizar con Android
+```powershell
+npm run build
 npx cap sync android
-
-# Abrir Android Studio
-npx cap open android
+Set-Location android
+.\gradlew.bat assembleDebug
 ```
 
----
+La APK se genera en:
 
-## 10. Flujo de trabajo con Git
-
-| Rama | Propósito |
-| :--- | :--- |
-| `main` | Versión estable del proyecto |
-| `develop` | Integración y pruebas |
-| `feature/backend` | Desarrollo del backend |
-| `feature/*` | Nuevas funcionalidades |
-
-**Obtener los últimos cambios del backend:**
-```bash
-git switch feature/backend
-git pull origin feature/backend
+```text
+android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
-**Integrar cambios en `develop`:**
-```bash
-git switch develop
-git pull origin develop
-git merge feature/backend
+Para instalarla en un dispositivo/emulador Android conectado mediante ADB, también se puede ejecutar desde la raíz:
+
+```powershell
+npx cap run android
 ```
 
----
+El proyecto no documenta una configuración de firma de producción; `assembleDebug` genera una APK de depuración, no una versión firmada para distribución.
 
-## 11. Estado del desarrollo
+## Pruebas manuales
 
-### Backend implementado
-- [x] Configuración del cliente Supabase.
-- [x] Autenticación y gestión de sesiones.
-- [x] Modelos de usuarios, salas, mensajes y archivos.
-- [x] Gestión de perfiles y búsqueda de usuarios.
-- [x] Creación transaccional de conversaciones y gestión de participantes.
-- [x] Envío, consulta, edición y eliminación lógica de mensajes.
-- [x] Suscripción a Supabase Realtime y configuración de políticas RLS.
-- [x] Almacenamiento de archivos e imágenes en Supabase Storage.
-- [x] Acceso a ubicación y preferencias locales mediante Capacitor.
-- [x] Registro de tokens FCM y despliegue de la Edge Function de notificaciones.
+1. Configura Supabase (esquema, RLS, Realtime, Storage y Auth) y completa los archivos de entorno.
+2. Ejecuta `npm start` y verifica la navegación a registro e inicio de sesión.
+3. Crea al menos dos usuarios de prueba; completa y consulta sus perfiles/contactos.
+4. Crea una conversación individual y una sala grupal; comprueba que participantes no autorizados no accedan a sus datos.
+5. Envía mensajes, verifica que aparezcan en tiempo real en el otro cliente y prueba edición/eliminación lógica.
+6. Prueba avatares, imágenes y archivos dentro de los límites configurados; comprueba el acceso temporal a los archivos privados.
+7. En Android, concede el permiso de ubicación y prueba el envío de coordenadas.
+8. En dos dispositivos Android o emuladores con Google Play Services, registra los tokens FCM y envía un mensaje para comprobar la notificación. Revisa los logs de la Edge Function si el envío falla.
+9. Ejecuta `npm run test:unit`, `npm run test:e2e` y `npm run lint` para las verificaciones automatizadas.
 
-### Integración y pruebas pendientes
-- [ ] Integración completa de los servicios con las pantallas del frontend.
-- [ ] Pruebas de creación de chats desde la aplicación.
-- [ ] Pruebas de envío y recepción de mensajes, archivos, imágenes y ubicación compartida.
-- [ ] Pruebas de notificaciones push y tiempo real entre dos usuarios/dispositivos Android.
+## Capturas de pantalla
 
----
+Agregar capturas propias de la aplicación en `docs/capturas/` y actualizar las rutas cuando estén disponibles.
 
-## 12. Consideraciones para el desarrollo del frontend
+| Pantalla | Captura |
+| --- | --- |
+| Inicio de sesión | *Pendiente de agregar (`docs/capturas/inicio-sesion.png`)* |
+| Conversaciones | *Pendiente de agregar (`docs/capturas/conversaciones.png`)* |
+| Sala de chat | *Pendiente de agregar (`docs/capturas/sala-chat.png`)* |
+| Perfil y configuración | *Pendiente de agregar (`docs/capturas/perfil-configuracion.png`)* |
 
-1. Utilizar los servicios existentes en lugar de realizar consultas directas a Supabase desde los componentes.
-2. Mantener los modelos TypeScript para respetar la estructura de los datos.
-3. Verificar que el usuario tenga una sesión activa antes de ejecutar operaciones protegidas.
-4. Consultar los chats y mensajes utilizando los métodos de sus respectivos servicios.
-5. Suscribirse a Supabase Realtime al ingresar a una conversación y cancelar las suscripciones al salir.
-6. Invocar la Edge Function después de enviar un mensaje correctamente.
-7. Registrar el dispositivo mediante `registrarDispositivo()` después de iniciar sesión y cuando corresponda renovar el token.
-8. Utilizar rutas de Storage para los archivos y generar URLs firmadas cuando sea necesario.
-9. Manejar errores de conexión, permisos y autenticación desde la interfaz.
+## Autores y contexto académico
 
----
+| Nombre | Rol |
+| --- | --- |
+| Ariel Arias | Backend |
+| Emilia Tana | Frontend |
 
-## 13. Repositorio
+- **Institución:** Escuela Politécnica Nacional del Ecuador
+- **Materia:** Desarrollo de Aplicaciones Móviles
 
-* **Código fuente:** GitHub — `Arielpassw/chat-app`
-* **Rama de backend:** `feature/backend`
+## Seguridad
 
-*Proyecto académico de desarrollo de aplicaciones móviles. Tecnologías principales: Ionic, Angular, Capacitor, Supabase, PostgreSQL y Firebase Cloud Messaging.*
+- RLS y políticas de Storage son esenciales: el uso de una clave pública en el cliente no sustituye el control de acceso.
+- No publiques contraseñas, tokens, claves privadas, secretos de cuentas de servicio ni claves `service_role`.
+- La clave privada FCM se configura únicamente como secreto de la Edge Function en Supabase.
+- Los archivos de entorno locales están ignorados por Git. Revisa los cambios antes de publicarlos y rota cualquier secreto que haya quedado expuesto.
