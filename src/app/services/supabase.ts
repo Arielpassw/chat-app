@@ -1,4 +1,31 @@
-import { Service } from '@angular/core';
 
-@Service()
-export class Supabase {}
+import { Injectable } from '@angular/core';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { environment } from '../../environments/environment';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SupabaseService {
+
+  private supabase: SupabaseClient;
+
+  constructor() {
+    this.supabase = createClient(
+      environment.supabase.url,
+      environment.supabase.anonKey,
+      {
+        auth: {
+          flowType: 'pkce',
+          detectSessionInUrl: false,
+          persistSession: true,
+          autoRefreshToken: true
+        }
+      }
+    );
+  }
+
+  get client(): SupabaseClient {
+    return this.supabase;
+  }
+}

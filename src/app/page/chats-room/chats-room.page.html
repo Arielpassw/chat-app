@@ -1,13 +1,136 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>chats-room</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="room-content">
+  <div class="room-container">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">chats-room</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <div class="room-header">
+      <button class="back-button" (click)="volverChats()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+
+      <div class="contact-avatar">{{ contacto.avatar }}</div>
+
+      <div class="contact-info">
+        <h2>{{ contacto.nombre }}</h2>
+        <span><span class="online-dot"></span>{{ contacto.estado }}</span>
+      </div>
+    </div>
+
+    <div class="loading-state" *ngIf="cargando">
+      <div class="loading-spinner"><ion-icon name="chatbubbles-outline"></ion-icon></div>
+      <p>Cargando conversación...</p>
+    </div>
+
+    <div class="error-state" *ngIf="!cargando && error">
+      <div class="error-icon"><ion-icon name="alert-circle-outline"></ion-icon></div>
+      <p>{{ error }}</p>
+      <button (click)="cargarMensajes()">Intentar nuevamente</button>
+    </div>
+
+    <div class="messages-container" *ngIf="!cargando">
+      <div class="empty-messages" *ngIf="mensajes.length === 0 && !error">
+        <div class="empty-icon"><ion-icon name="chatbubbles-outline"></ion-icon></div>
+        <h2>No hay mensajes</h2>
+        <p>Sé el primero en enviar un mensaje.</p>
+      </div>
+
+      <div
+        *ngFor="let mensaje of mensajes"
+        class="message-row"
+        [class.sent]="esMensajeMio(mensaje)"
+        [class.received]="!esMensajeMio(mensaje)">
+
+        <div class="message-bubble" [class.deleted]="mensaje.eliminado_en">
+
+          <ng-container *ngIf="!mensaje.eliminado_en">
+            <p *ngIf="mensaje.tipo === 'texto'">{{ mensaje.contenido }}</p>
+
+            <div class="attachment" *ngIf="mensaje.tipo === 'imagen'">
+              <img
+                *ngIf="urlsArchivos.get(mensaje.id)"
+                [src]="urlsArchivos.get(mensaje.id)"
+                [alt]="mensaje.archivo_nombre || 'Imagen compartida'">
+              <span *ngIf="!urlsArchivos.get(mensaje.id)">Cargando imagen...</span>
+            </div>
+
+            <div class="attachment file-attachment" *ngIf="mensaje.tipo === 'archivo'">
+              <ion-icon name="document-outline"></ion-icon>
+              <div>
+                <strong>{{ mensaje.archivo_nombre || 'Archivo' }}</strong>
+                <small>{{ mensaje.archivo_tamano ? ((mensaje.archivo_tamano / 1024 / 1024) | number:'1.1-2') + ' MB' : '' }}</small>
+              </div>
+              <a *ngIf="urlsArchivos.get(mensaje.id)" [href]="urlsArchivos.get(mensaje.id)" target="_blank" rel="noopener">Abrir</a>
+            </div>
+
+            <div class="location-attachment" *ngIf="mensaje.tipo === 'ubicacion'">
+              <ion-icon name="location-outline"></ion-icon>
+              <div>
+                <strong>Ubicación compartida</strong>
+                <small>{{ mensaje.latitud }}, {{ mensaje.longitud }}</small>
+              </div>
+              <button (click)="abrirUbicacion(mensaje)">Mapa</button>
+            </div>
+          </ng-container>
+
+          <div class="deleted-message" *ngIf="mensaje.eliminado_en">
+            Mensaje eliminado
+          </div>
+
+          <div class="edit-box" *ngIf="editandoId === mensaje.id">
+            <input [(ngModel)]="textoEdicion" maxlength="1000">
+            <div>
+              <button (click)="guardarEdicion(mensaje)">Guardar</button>
+              <button (click)="cancelarEdicion()">Cancelar</button>
+            </div>
+          </div>
+
+          <div class="message-actions" *ngIf="esMensajeMio(mensaje) && !mensaje.eliminado_en && editandoId !== mensaje.id">
+            <button *ngIf="mensaje.tipo === 'texto'" (click)="iniciarEdicion(mensaje)" title="Editar">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </button>
+            <button (click)="eliminarMensaje(mensaje)" title="Eliminar">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+
+          <span class="message-time">
+            {{ obtenerHora(mensaje.creado_en) }}
+            <span *ngIf="mensaje.editado_en"> · editado</span>
+            <ion-icon *ngIf="esMensajeMio(mensaje)" name="checkmark-done-outline"></ion-icon>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-input-container" *ngIf="!cargando && !error">
+      <input
+        #fileInput
+        type="file"
+        hidden
+        accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip"
+        (change)="seleccionarArchivo($event)">
+
+      <button class="tool-button" (click)="fileInput.click()" [disabled]="enviando" title="Imagen o archivo">
+        <ion-icon name="attach-outline"></ion-icon>
+      </button>
+
+      <button class="tool-button" (click)="compartirUbicacion()" [disabled]="enviando" title="Compartir ubicación">
+        <ion-icon name="location-outline"></ion-icon>
+      </button>
+
+      <div class="input-box">
+        <input
+          type="text"
+          [(ngModel)]="nuevoMensaje"
+          placeholder="Escribe un mensaje..."
+          maxlength="1000"
+          (keyup.enter)="enviarMensaje()">
+      </div>
+
+      <button
+        class="send-button"
+        (click)="enviarMensaje()"
+        [disabled]="!nuevoMensaje.trim() || enviando">
+        <ion-icon [name]="enviando ? 'hourglass-outline' : 'send-outline'"></ion-icon>
+      </button>
+    </div>
+  </div>
 </ion-content>

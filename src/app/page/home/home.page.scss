@@ -1,0 +1,243 @@
+.home-content {
+  --background: var(--app-bg);
+  background: var(--app-bg);
+}
+
+.home-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 35px 24px 40px;
+  box-sizing: border-box;
+}
+
+/* Encabezado */
+
+.welcome-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.welcome-small {
+  display: block;
+  color: var(--app-muted);
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.welcome-section h1 {
+  margin: 0;
+  color: var(--app-text);
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.welcome-section p {
+  margin: 7px 0 0;
+  color: var(--app-text-secondary);
+  font-size: 15px;
+}
+
+.profile-button {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: var(--app-purple);
+  color: #ffffff;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--app-shadow-sm);
+}
+
+/* Tarjeta principal */
+
+.main-card {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 22px;
+  background: linear-gradient(
+    135deg,
+    var(--app-purple),
+    var(--app-primary)
+  );
+  border-radius: 22px;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: var(--app-shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.main-card:active {
+  transform: scale(0.98);
+}
+
+.main-icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.main-info {
+  flex: 1;
+}
+
+.main-info span {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.main-info p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.arrow-icon {
+  font-size: 23px;
+}
+
+/* Título */
+
+h2 {
+  margin: 32px 0 16px;
+  color: var(--app-text);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Acciones rápidas */
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.quick-card {
+  min-height: 145px;
+  padding: 18px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border-soft);
+  border-radius: 19px;
+  box-shadow: var(--app-shadow-sm);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.quick-card:active {
+  transform: scale(0.97);
+}
+
+.quick-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  margin-bottom: 13px;
+}
+
+.chats-icon {
+  background: var(--app-purple-soft);
+  color: var(--app-purple);
+}
+
+.contacts-icon {
+  background: var(--app-primary-soft);
+  color: var(--app-primary);
+}
+
+.profile-icon {
+  background: var(--app-success-soft);
+  color: var(--app-success);
+}
+
+.settings-icon {
+  background: var(--app-warning-soft);
+  color: var(--app-warning);
+}
+
+.quick-card span {
+  display: block;
+  color: var(--app-text);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.quick-card small {
+  display: block;
+  margin-top: 5px;
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+/* Cerrar sesión */
+
+.logout-button {
+  width: 100%;
+  margin-top: 25px;
+  padding: 15px;
+  border: 1px solid var(--app-border);
+  border-radius: 15px;
+  background: var(--app-surface);
+  color: var(--app-danger);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.logout-button:active {
+  transform: scale(0.98);
+}
+
+.logout-button ion-icon {
+  font-size: 20px;
+}
+
+/* Responsive */
+
+@media (min-width: 700px) {
+  .quick-actions {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .home-container {
+    padding: 28px 18px 35px;
+  }
+
+  .welcome-section h1 {
+    font-size: 28px;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+}
