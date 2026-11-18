@@ -1,5 +1,6 @@
 .register-content {
-  --background: #f5f7fb;
+  --background: var(--app-bg);
+  background: var(--app-bg);
 }
 
 .register-container {
@@ -16,7 +17,7 @@
 }
 
 .back-button {
-  --color: #5b5ce2;
+  --color: var(--app-primary);
 
   margin-left: -12px;
   margin-bottom: 10px;
@@ -27,7 +28,7 @@
 .header-section h1 {
   margin: 0;
 
-  color: #1d1d2c;
+  color: var(--app-text);
 
   font-size: 30px;
   font-weight: 800;
@@ -36,7 +37,7 @@
 .header-section p {
   margin-top: 8px;
 
-  color: #77788a;
+  color: var(--app-text-secondary);
 
   font-size: 15px;
 }
@@ -66,7 +67,7 @@
 
   font-size: 20px;
 
-  color: #5b5ce2;
+  color: var(--app-primary);
 }
 
 /* Inputs */
@@ -74,33 +75,33 @@
 .input-group ion-input {
   width: 100%;
 
-  --background: #ffffff;
-  --color: #1d1d2c;
+  --background: var(--app-input-bg);
+  --color: var(--app-input-text);
 
-  --border-color: #d9d9e6;
+  --border-color: var(--app-input-border);
   --border-width: 1px;
   --border-style: solid;
   --border-radius: 14px;
 
-  --highlight-color-focused: #5b5ce2;
+  --highlight-color-focused: var(--app-primary);
 
   --padding-start: 48px;
   --padding-end: 48px;
 
-  --placeholder-color: #9a9aaa;
+  --placeholder-color: var(--app-placeholder);
   --placeholder-opacity: 1;
 }
 
 /* Etiqueta */
 
 .input-group ion-input::part(label) {
-  color: #77788a;
+  color: var(--app-text-secondary);
 }
 
 /* Input enfocado */
 
 .input-group ion-input.has-focus {
-  --border-color: #5b5ce2;
+  --border-color: var(--app-primary);
 }
 
 /* ---------- PASSWORD ---------- */
@@ -112,7 +113,7 @@
 
   z-index: 10;
 
-  --color: #77788a;
+  --color: var(--app-text-secondary);
   --background: transparent;
 
   margin: 0;
@@ -127,12 +128,20 @@
   font-size: 14px;
 }
 
+.error-message {
+  color: var(--app-danger);
+}
+
+.success-message {
+  color: var(--app-success);
+}
+
 /* ---------- BOTÓN REGISTRO ---------- */
 
 .register-button {
-  --background: #5b5ce2;
-  --background-hover: #4d4ecf;
-  --background-activated: #4d4ecf;
+  --background: var(--app-primary);
+  --background-hover: var(--app-primary-hover);
+  --background-activated: var(--app-primary-hover);
 
   --border-radius: 14px;
 
@@ -142,7 +151,7 @@
   font-size: 16px;
   font-weight: 700;
 
-  box-shadow: 0 8px 20px rgba(91, 92, 226, 0.20);
+  box-shadow: var(--app-shadow-md);
 }
 
 .register-button ion-spinner {
@@ -161,14 +170,26 @@
 .login-section p {
   display: inline;
 
-  color: #77788a;
+  color: var(--app-text-secondary);
 
   font-size: 14px;
 }
 
 .login-section ion-button {
-  --color: #5b5ce2;
+  --color: var(--app-primary);
 
   font-weight: 700;
   font-size: 14px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 400px) {
+  .register-container {
+    padding: 24px 18px;
+  }
+
+  .header-section h1 {
+    font-size: 28px;
+  }
 }

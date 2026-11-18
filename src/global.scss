@@ -1,55 +1,1024 @@
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
-/* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-/* Page colors are designed for light backgrounds; system dark colors made text disappear. */
+/* =========================================================
+   TEMA PRINCIPAL
+   ========================================================= */
 
 :root {
+
   color-scheme: light;
-  --ion-text-color: #202b3c;
-  --ion-background-color: #f6f5fa;
+
+  /* Fondos */
+  --app-bg: #f5f7fb;
+  --app-surface: #ffffff;
+  --app-surface-2: #f8f9fc;
+  --app-surface-3: #eef1f6;
+
+  /* Textos */
+  --app-text: #202b3c;
+  --app-text-secondary: #475467;
+  --app-muted: #8993a4;
+  --app-placeholder: #a0aaba;
+
+  /* Bordes */
+  --app-border: #e4e9f1;
+  --app-border-soft: #edf0f5;
+
+  /* Principal */
+  --app-primary: #5365c9;
+  --app-primary-hover: #4658bb;
+  --app-primary-soft: #e9edff;
+
+  /* Morado utilizado en algunas pantallas */
+  --app-purple: #6c4cc1;
+  --app-purple-soft: #eee9ff;
+
+  /* Estados */
+  --app-success: #23824b;
+  --app-success-soft: #edf9f1;
+
+  --app-danger: #d64545;
+  --app-danger-soft: #fff0f0;
+
+  --app-warning: #c47a16;
+  --app-warning-soft: #fff7e6;
+
+  /* Inputs */
+  --app-input-bg: #ffffff;
+  --app-input-text: #202b3c;
+  --app-input-border: #d9dfe9;
+
+  /* Mensajes */
+  --app-message-received: #ffffff;
+  --app-message-sent: #5365c9;
+
+  /* Edición */
+  --app-edit-bg: #eef1ff;
+  --app-edit-input: #ffffff;
+  --app-edit-text: #202b3c;
+  --app-edit-border: #cbd2f5;
+
+  /* Sombras */
+  --app-shadow:
+    0 5px 18px rgba(35, 30, 60, 0.06);
+
+  --app-shadow-large:
+    0 10px 30px rgba(35, 30, 60, 0.08);
+
+  /* Ionic */
+  --ion-background-color: var(--app-bg);
+  --ion-text-color: var(--app-text);
+
+  --ion-color-primary: var(--app-primary);
 }
 
-body,
-ion-content {
-  color: #202b3c;
+
+/* =========================================================
+   MODO OSCURO
+   ========================================================= */
+
+html.dark-mode {
+
+  color-scheme: dark;
+
+  /* Fondos */
+  --app-bg: #0f1117;
+  --app-surface: #171a22;
+  --app-surface-2: #1d212b;
+  --app-surface-3: #242934;
+
+  /* Textos */
+  --app-text: #f3f5f8;
+  --app-text-secondary: #c3c9d4;
+  --app-muted: #9aa3b2;
+  --app-placeholder: #737c8d;
+
+  /* Bordes */
+  --app-border: #2d333f;
+  --app-border-soft: #252b35;
+
+  /* Principal */
+  --app-primary: #8794f0;
+  --app-primary-hover: #98a4f5;
+  --app-primary-soft: #292f4b;
+
+  /* Morado */
+  --app-purple: #9579db;
+  --app-purple-soft: #302749;
+
+  /* Estados */
+  --app-success: #63d394;
+  --app-success-soft: #193528;
+
+  --app-danger: #ff8585;
+  --app-danger-soft: #3a2025;
+
+  --app-warning: #e5a34f;
+  --app-warning-soft: #3a2d1b;
+
+  /* Inputs */
+  --app-input-bg: #151820;
+  --app-input-text: #f3f5f8;
+  --app-input-border: #353c49;
+
+  /* Mensajes */
+  --app-message-received: #1c2029;
+  --app-message-sent: #5866c7;
+
+  /* Edición */
+  --app-edit-bg: #22283b;
+  --app-edit-input: #14171e;
+  --app-edit-text: #f5f7fb;
+  --app-edit-border: #4b557e;
+
+  /* Sombras */
+  --app-shadow:
+    0 5px 20px rgba(0, 0, 0, 0.28);
+
+  --app-shadow-large:
+    0 12px 35px rgba(0, 0, 0, 0.35);
+
+  /* Ionic */
+  --ion-background-color: var(--app-bg);
+  --ion-text-color: var(--app-text);
+
+  --ion-color-primary: var(--app-primary);
 }
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+html,
+body,
+ion-app {
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+body {
+  margin: 0;
+}
+
+ion-content {
+  --background: var(--app-bg);
+  --color: var(--app-text);
+}
+
+ion-header {
+  background: var(--app-surface);
+}
+
+ion-toolbar {
+  --background: var(--app-surface);
+  --color: var(--app-text);
+  --border-color: var(--app-border);
+}
+
+ion-title {
+  color: var(--app-text);
+}
+
+
+/* =========================================================
+   INPUTS NATIVOS
+   ========================================================= */
 
 input,
 textarea,
+select {
+  color: var(--app-input-text);
+  background: var(--app-input-bg);
+  border-color: var(--app-input-border);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--app-placeholder);
+}
+
+
+/* =========================================================
+   INPUTS DE IONIC
+   ========================================================= */
+
+html.dark-mode ion-input,
+html.dark-mode ion-textarea {
+
+  --background: var(--app-input-bg);
+  --color: var(--app-input-text);
+
+  --border-color: var(--app-input-border);
+
+  --placeholder-color: var(--app-placeholder);
+
+  --highlight-color-focused: var(--app-primary);
+}
+
+
+/* =========================================================
+   LISTAS / ITEMS
+   ========================================================= */
+
+html.dark-mode ion-list {
+  --background: var(--app-surface);
+  background: var(--app-surface) !important;
+}
+
+html.dark-mode ion-item {
+  --background: var(--app-surface);
+  --color: var(--app-text);
+  --border-color: var(--app-border);
+}
+
+
+/* =========================================================
+   TOGGLES
+   ========================================================= */
+
+ion-toggle {
+  --track-background: #cbd2df;
+  --track-background-checked: var(--app-primary);
+  --handle-background: #ffffff;
+}
+
+
+/* =========================================================
+   BOTONES GENERALES
+   ========================================================= */
+
+html.dark-mode button {
+  color: var(--app-text);
+}
+
+html.dark-mode ion-button {
+  --color: var(--app-text);
+}
+
+
+/* =========================================================
+   CONTENEDORES GENERALES DE TODAS LAS PÁGINAS
+   ========================================================= */
+
+html.dark-mode
+.chats-container,
+html.dark-mode
+.contacts-container,
+html.dark-mode
+.create-container,
+html.dark-mode
+.edit-profile-container,
+html.dark-mode
+.home-container,
+html.dark-mode
+.login-container,
+html.dark-mode
+.media-container,
+html.dark-mode
+.profile-container,
+html.dark-mode
+.register-container,
+html.dark-mode
+.room-container,
+html.dark-mode
+.settings-container {
+
+  color: var(--app-text);
+}
+
+
+/* =========================================================
+   TARJETAS
+   ========================================================= */
+
+html.dark-mode
+.profile-card,
+html.dark-mode
+.information-card,
+html.dark-mode
+.settings-card,
+html.dark-mode
+.section-card,
+html.dark-mode
+.preview-card,
+html.dark-mode
+.avatar-editor,
+html.dark-mode
+.main-card,
+html.dark-mode
+.quick-card,
+html.dark-mode
+.chat-item,
+html.dark-mode
+.contact-item {
+
+  background: var(--app-surface) !important;
+
+  color: var(--app-text) !important;
+
+  border-color: var(--app-border) !important;
+
+  box-shadow: var(--app-shadow);
+}
+
+
+/* =========================================================
+   FILAS DENTRO DE TARJETAS
+   ========================================================= */
+
+html.dark-mode
+.setting-row,
+html.dark-mode
+.info-row,
+html.dark-mode
+.selected-item {
+
+  background: var(--app-surface) !important;
+
+  color: var(--app-text) !important;
+
+  border-color: var(--app-border-soft) !important;
+}
+
+
+/* =========================================================
+   BUSCADORES
+   ========================================================= */
+
+html.dark-mode
+.search-box {
+
+  background: var(--app-surface) !important;
+
+  border: 1px solid var(--app-border) !important;
+
+  box-shadow: var(--app-shadow);
+
+  color: var(--app-text);
+}
+
+html.dark-mode
+.search-box input {
+
+  background: transparent !important;
+
+  color: var(--app-text) !important;
+}
+
+html.dark-mode
+.search-box input::placeholder {
+
+  color: var(--app-placeholder) !important;
+}
+
+
+/* =========================================================
+   BOTONES BLANCOS
+   ========================================================= */
+
+html.dark-mode
+.back-button,
+html.dark-mode
+.tool-button,
+html.dark-mode
+.new-room-button,
+html.dark-mode
+.cancel-button,
+html.dark-mode
+.logout-button,
+html.dark-mode
+.clear-button {
+
+  background: var(--app-surface) !important;
+
+  color: var(--app-text) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+
+/* =========================================================
+   ICONOS
+   ========================================================= */
+
+html.dark-mode
+.info-icon,
+html.dark-mode
+.setting-icon,
+html.dark-mode
+.contact-avatar,
+html.dark-mode
+.avatar-preview,
+html.dark-mode
+.main-icon,
+html.dark-mode
+.quick-icon,
+html.dark-mode
+.file-icon {
+
+  background: var(--app-primary-soft) !important;
+
+  color: var(--app-primary) !important;
+}
+
+
+/* =========================================================
+   CHAT
+   ========================================================= */
+
+html.dark-mode
+.room-content {
+
+  --background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.message-input-container {
+
+  background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.input-box {
+
+  background: var(--app-surface) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.input-box input {
+
+  color: var(--app-text) !important;
+
+  background: transparent !important;
+}
+
+html.dark-mode
+.received .message-bubble {
+
+  background: var(--app-message-received) !important;
+
+  color: var(--app-text) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.sent .message-bubble {
+
+  background: var(--app-message-sent) !important;
+
+  color: #ffffff !important;
+}
+
+
+/* =========================================================
+   EDICIÓN DE MENSAJES
+   ========================================================= */
+
+html.dark-mode
+.edit-box {
+
+  background: var(--app-edit-bg) !important;
+
+  border: 1px solid var(--app-edit-border) !important;
+
+  border-radius: 11px;
+}
+
+html.dark-mode
+.edit-box input {
+
+  background: var(--app-edit-input) !important;
+
+  color: var(--app-edit-text) !important;
+
+  border: 1px solid var(--app-edit-border) !important;
+
+  caret-color: var(--app-primary) !important;
+}
+
+html.dark-mode
+.edit-box input::placeholder {
+
+  color: var(--app-placeholder) !important;
+}
+
+
+/* =========================================================
+   CHAT - ARCHIVOS
+   ========================================================= */
+
+html.dark-mode
+.received .file-attachment,
+html.dark-mode
+.received .location-attachment {
+
+  background: var(--app-surface-2) !important;
+
+  color: var(--app-text);
+}
+
+
+/* =========================================================
+   LISTAS DE CHATS
+   ========================================================= */
+
+html.dark-mode
+.chat-list,
+html.dark-mode
+.contact-list {
+
+  background: transparent !important;
+}
+
+html.dark-mode
+.chat-item,
+html.dark-mode
+.contact-item {
+
+  color: var(--app-text) !important;
+}
+
+html.dark-mode
+.chat-info,
+html.dark-mode
+.contact-info {
+
+  color: var(--app-text);
+}
+
+html.dark-mode
+.chat-info h3,
+html.dark-mode
+.contact-info h3 {
+
+  color: var(--app-text) !important;
+}
+
+html.dark-mode
+.chat-info p,
+html.dark-mode
+.contact-info p {
+
+  color: var(--app-muted) !important;
+}
+
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+html.dark-mode
+.home-content {
+
+  --background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.welcome-section h1,
+html.dark-mode
+.welcome-section h2,
+html.dark-mode
+.main-info h2,
+html.dark-mode
+.quick-card h3 {
+
+  color: var(--app-text) !important;
+}
+
+html.dark-mode
+.welcome-small,
+html.dark-mode
+.main-info p {
+
+  color: var(--app-muted) !important;
+}
+
+html.dark-mode
+.main-card {
+
+  background: var(--app-surface) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.quick-card {
+
+  background: var(--app-surface) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+
+/* =========================================================
+   CONTACTOS
+   ========================================================= */
+
+html.dark-mode
+.contacts-content {
+
+  --background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.contacts-info,
+html.dark-mode
+.contact-info span {
+
+  color: var(--app-muted) !important;
+}
+
+
+/* =========================================================
+   CREAR SALA
+   ========================================================= */
+
+html.dark-mode
+.create-room-content {
+
+  --background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.section-card {
+
+  background: var(--app-surface) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.selected-list {
+
+  background: transparent !important;
+}
+
+html.dark-mode
+.selected-item {
+
+  background: var(--app-surface-2) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+
+/* =========================================================
+   PERFIL
+   ========================================================= */
+
+html.dark-mode
+.profile-content {
+
+  --background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.profile-card {
+
+  background: var(--app-surface) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.avatar-large {
+
+  background: var(--app-primary-soft) !important;
+
+  color: var(--app-primary) !important;
+
+  border-color: var(--app-surface) !important;
+}
+
+html.dark-mode
+.profile-card h2,
+html.dark-mode
+.section-title h2 {
+
+  color: var(--app-text) !important;
+}
+
+html.dark-mode
+.profile-card p,
+html.dark-mode
+.info-content span {
+
+  color: var(--app-muted) !important;
+}
+
+html.dark-mode
+.info-content p {
+
+  color: var(--app-text-secondary) !important;
+}
+
+html.dark-mode
+.info-content input {
+
+  color: var(--app-text) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.logout-button {
+
+  background: var(--app-surface) !important;
+
+  border-color: #5b3037 !important;
+
+  color: var(--app-danger) !important;
+}
+
+
+/* =========================================================
+   EDITAR PERFIL
+   ========================================================= */
+
+html.dark-mode
+.edit-profile-content {
+
+  --background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.avatar-editor {
+
+  background: var(--app-surface) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.avatar-editor small {
+
+  color: var(--app-muted) !important;
+}
+
+
+/* =========================================================
+   CONFIGURACIÓN
+   ========================================================= */
+
+html.dark-mode
+.settings-content {
+
+  --background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.settings-card {
+
+  background: var(--app-surface) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.setting-info strong {
+
+  color: var(--app-text) !important;
+}
+
+html.dark-mode
+.setting-info span {
+
+  color: var(--app-muted) !important;
+}
+
+
+/* =========================================================
+   LOGIN Y REGISTRO
+   ========================================================= */
+
+html.dark-mode
+.login-content,
+html.dark-mode
+.register-content {
+
+  --background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.logo-section h1,
+html.dark-mode
+.header-section h1 {
+
+  color: var(--app-text) !important;
+}
+
+html.dark-mode
+.logo-section p,
+html.dark-mode
+.header-section p,
+html.dark-mode
+.login-section p {
+
+  color: var(--app-muted) !important;
+}
+
+html.dark-mode
+.input-group ion-input {
+
+  --background: var(--app-input-bg) !important;
+
+  --color: var(--app-input-text) !important;
+
+  --border-color: var(--app-input-border) !important;
+
+  --placeholder-color: var(--app-placeholder) !important;
+}
+
+html.dark-mode
+.password-button {
+
+  --color: var(--app-muted) !important;
+}
+
+
+/* =========================================================
+   MEDIA PREVIEW
+   ========================================================= */
+
+html.dark-mode
+.media-content {
+
+  --background: var(--app-bg) !important;
+}
+
+html.dark-mode
+.preview-card {
+
+  background: var(--app-surface) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.file-details {
+
+  border-color: var(--app-border) !important;
+
+  background: var(--app-surface-2) !important;
+}
+
+html.dark-mode
+.file-information h2 {
+
+  color: var(--app-text) !important;
+}
+
+html.dark-mode
+.file-information p {
+
+  color: var(--app-muted) !important;
+}
+
+
+/* =========================================================
+   ESTADOS VACÍOS / CARGA / ERROR
+   ========================================================= */
+
+html.dark-mode
+.empty-state,
+html.dark-mode
+.loading-state,
+html.dark-mode
+.error-state {
+
+  color: var(--app-text);
+}
+
+html.dark-mode
+.empty-state p,
+html.dark-mode
+.loading-state p,
+html.dark-mode
+.error-state p {
+
+  color: var(--app-muted) !important;
+}
+
+html.dark-mode
+.error-card {
+
+  background: var(--app-surface) !important;
+
+  border-color: var(--app-border) !important;
+}
+
+html.dark-mode
+.error-card p {
+
+  color: var(--app-danger) !important;
+}
+
+
+/* =========================================================
+   BADGES / ESTADOS
+   ========================================================= */
+
+html.dark-mode
+.status,
+html.dark-mode
+.account-status {
+
+  background: var(--app-success-soft) !important;
+
+  color: var(--app-success) !important;
+}
+
+html.dark-mode
+.unread {
+
+  background: var(--app-primary-soft) !important;
+
+  color: var(--app-primary) !important;
+}
+
+
+/* =========================================================
+   BOTONES PRINCIPALES
+   ========================================================= */
+
+html.dark-mode
+.create-button,
+html.dark-mode
+.register-button,
+html.dark-mode
+.login-button,
+html.dark-mode
+.save-button,
+html.dark-mode
+.send-button {
+
+  background: var(--app-primary) !important;
+
+  color: #ffffff !important;
+}
+
+html.dark-mode
+.create-button:hover,
+html.dark-mode
+.register-button:hover,
+html.dark-mode
+.login-button:hover,
+html.dark-mode
+.save-button:hover,
+html.dark-mode
+.send-button:hover {
+
+  background: var(--app-primary-hover) !important;
+}
+
+
+/* =========================================================
+   TRANSICIONES
+   ========================================================= */
+
+ion-content,
+ion-toolbar,
+ion-item,
+ion-input,
+ion-textarea,
+button,
+input,
+textarea,
 select,
-button {
-  color-scheme: light;
+.profile-card,
+.settings-card,
+.information-card,
+.section-card,
+.preview-card,
+.chat-item,
+.contact-item,
+.message-bubble,
+.input-box,
+.search-box {
+
+  transition:
+    background-color .2s ease,
+    color .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease;
 }

@@ -1,5 +1,6 @@
 .home-content {
-  --background: #f6f5fa;
+  --background: var(--app-bg);
+  background: var(--app-bg);
 }
 
 .home-container {
@@ -21,21 +22,21 @@
 
 .welcome-small {
   display: block;
-  color: #77758a;
+  color: var(--app-muted);
   font-size: 14px;
   margin-bottom: 5px;
 }
 
 .welcome-section h1 {
   margin: 0;
-  color: #27243a;
+  color: var(--app-text);
   font-size: 32px;
   font-weight: 700;
 }
 
 .welcome-section p {
   margin: 7px 0 0;
-  color: #77758a;
+  color: var(--app-text-secondary);
   font-size: 15px;
 }
 
@@ -44,13 +45,14 @@
   height: 48px;
   border: none;
   border-radius: 50%;
-  background: #6c4cc1;
-  color: white;
+  background: var(--app-purple);
+  color: #ffffff;
   font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: var(--app-shadow-sm);
 }
 
 /* Tarjeta principal */
@@ -60,12 +62,16 @@
   align-items: center;
   gap: 17px;
   padding: 22px;
-  background: linear-gradient(135deg, #6c4cc1, #8b6bd1);
+  background: linear-gradient(
+    135deg,
+    var(--app-purple),
+    var(--app-primary)
+  );
   border-radius: 22px;
-  color: white;
+  color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 10px 25px rgba(108, 76, 193, 0.20);
-  transition: transform 0.2s ease;
+  box-shadow: var(--app-shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .main-card:active {
@@ -81,6 +87,7 @@
   align-items: center;
   justify-content: center;
   font-size: 28px;
+  flex-shrink: 0;
 }
 
 .main-info {
@@ -106,7 +113,7 @@
 
 h2 {
   margin: 32px 0 16px;
-  color: #27243a;
+  color: var(--app-text);
   font-size: 20px;
   font-weight: 700;
 }
@@ -122,11 +129,15 @@ h2 {
 .quick-card {
   min-height: 145px;
   padding: 18px;
-  background: white;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border-soft);
   border-radius: 19px;
-  box-shadow: 0 5px 18px rgba(35, 30, 60, 0.07);
+  box-shadow: var(--app-shadow-sm);
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .quick-card:active {
@@ -145,28 +156,28 @@ h2 {
 }
 
 .chats-icon {
-  background: #eee9ff;
-  color: #6c4cc1;
+  background: var(--app-purple-soft);
+  color: var(--app-purple);
 }
 
 .contacts-icon {
-  background: #e8f4ff;
-  color: #3784c6;
+  background: var(--app-primary-soft);
+  color: var(--app-primary);
 }
 
 .profile-icon {
-  background: #eaf8ef;
-  color: #3c9b61;
+  background: var(--app-success-soft);
+  color: var(--app-success);
 }
 
 .settings-icon {
-  background: #fff1e6;
-  color: #d47a32;
+  background: var(--app-warning-soft);
+  color: var(--app-warning);
 }
 
 .quick-card span {
   display: block;
-  color: #29263b;
+  color: var(--app-text);
   font-size: 16px;
   font-weight: 700;
 }
@@ -174,7 +185,7 @@ h2 {
 .quick-card small {
   display: block;
   margin-top: 5px;
-  color: #88869a;
+  color: var(--app-muted);
   font-size: 12px;
 }
 
@@ -184,10 +195,10 @@ h2 {
   width: 100%;
   margin-top: 25px;
   padding: 15px;
-  border: 1px solid #e4e1ea;
+  border: 1px solid var(--app-border);
   border-radius: 15px;
-  background: white;
-  color: #d04f5f;
+  background: var(--app-surface);
+  color: var(--app-danger);
   font-size: 14px;
   font-weight: 600;
   display: flex;
@@ -195,6 +206,14 @@ h2 {
   justify-content: center;
   gap: 8px;
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.logout-button:active {
+  transform: scale(0.98);
 }
 
 .logout-button ion-icon {
