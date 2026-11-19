@@ -244,8 +244,8 @@ La aplicación solicita permiso de notificaciones en Android y registra el token
 | Pruebas unitarias (Vitest) | `npm run test:unit` |
 | Pruebas E2E (Playwright, perfil Pixel 7) | `npm run test:e2e` |
 | Lint, chequeo E2E y formato | `npm run lint` |
-| Compilar y sincronizar Android | `npx cap sync android` |
-| Abrir el proyecto Android | `npx cap open android` |
+| Compilar y sincronizar Android | `ionic capacitor sync android` |
+| Abrir el proyecto Android | `ionic capacitor open android` |
 
 ### Generar una APK debug
 
@@ -253,7 +253,7 @@ Desde PowerShell, en la raíz:
 
 ```powershell
 npm run build
-npx cap sync android
+ionic capacitor sync android
 Set-Location android
 .\gradlew.bat assembleDebug
 ```
@@ -267,7 +267,7 @@ android/app/build/outputs/apk/debug/app-debug.apk
 Para instalarla en un dispositivo/emulador Android conectado mediante ADB, también se puede ejecutar desde la raíz:
 
 ```powershell
-npx cap run android
+ionic capacitor run android
 ```
 
 El proyecto no documenta una configuración de firma de producción; `assembleDebug` genera una APK de depuración, no una versión firmada para distribución.
@@ -286,14 +286,14 @@ El proyecto no documenta una configuración de firma de producción; `assembleDe
 
 ## Capturas de pantalla
 
-Agregar capturas propias de la aplicación en `docs/capturas/` y actualizar las rutas cuando estén disponibles.
-
 | Pantalla | Captura |
 | --- | --- |
-| Inicio de sesión | *Pendiente de agregar (`docs/capturas/inicio-sesion.png`)* |
-| Conversaciones | *Pendiente de agregar (`docs/capturas/conversaciones.png`)* |
-| Sala de chat | *Pendiente de agregar (`docs/capturas/sala-chat.png`)* |
-| Perfil y configuración | *Pendiente de agregar (`docs/capturas/perfil-configuracion.png`)* |
+| Inicio de sesión | (`docs/capturas/inicio-sesion.jpeg`)* |
+| Inicio | (`docs/capturas/inicio.jpeg`)* |
+| Pagina de conversaciones | (`docs/capturas/pagina-chat.jpeg`)* |
+| Conversaciones | *Pendiente de agregar (`docs/capturas/conversaciones.jpeg`)* |
+| Sala de chat | (`docs/capturas/sala-chat.jpeg`)* |
+| Perfil y configuración | (`docs/capturas/perfil-configuracion.jpeg`)* |
 
 ## Autores y contexto académico
 
@@ -302,7 +302,7 @@ Agregar capturas propias de la aplicación en `docs/capturas/` y actualizar las 
 | Ariel Arias | Backend |
 | Emilia Tana | Frontend |
 
-- **Institución:** Escuela Politécnica Nacional del Ecuador
+- **Universidad:** Escuela Politécnica Nacional del Ecuador
 - **Materia:** Desarrollo de Aplicaciones Móviles
 
 ## Seguridad

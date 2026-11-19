@@ -77,3 +77,7 @@ Thumbs.db
 # Credenciales locales
 /src/environments/environment.ts
 /src/environments/environment.prod.ts
+
+
+# Firebase
+.firebase/
