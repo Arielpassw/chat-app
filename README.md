@@ -286,14 +286,29 @@ El proyecto no documenta una configuración de firma de producción; `assembleDe
 
 ## Capturas de pantalla
 
-| Pantalla | Captura |
-| --- | --- |
-| Inicio de sesión | (`docs/capturas/inicio-sesion.jpeg`)* |
-| Inicio | (`docs/capturas/inicio.jpeg`)* |
-| Pagina de conversaciones | (`docs/capturas/pagina-chat.jpeg`)* |
-| Conversaciones | *Pendiente de agregar (`docs/capturas/conversaciones.jpeg`)* |
-| Sala de chat | (`docs/capturas/sala-chat.jpeg`)* |
-| Perfil y configuración | (`docs/capturas/perfil-configuracion.jpeg`)* |
+### Inicio de sesi?n
+
+![Pantalla de inicio de sesi?n](docs/capturas/inicio-sesion.jpeg)
+
+### Inicio
+
+![Pantalla de inicio](docs/capturas/inicio.jpeg)
+
+### Conversaciones
+
+![Lista de conversaciones](docs/capturas/conversaciones.jpeg)
+
+### Chat
+
+![P?gina de chat](docs/capturas/pagina-chat.jpeg)
+
+### Sala de chat
+
+![Sala de chat](docs/capturas/sala-chat.jpeg)
+
+### Perfil y configuraci?n
+
+![Perfil y configuraci?n](docs/capturas/perfil-configuracion.jpeg)
 
 ## Autores y contexto académico
 
