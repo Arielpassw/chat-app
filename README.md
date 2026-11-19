@@ -1,5 +1,9 @@
 # Chat App
 
+## Aplicación desplegada
+
+Prueba Chat App en la web: [Abrir Chat App](https://chatapp-9ab75.web.app) (Firebase Hosting).
+
 Aplicación móvil de mensajería construida con **Ionic**, **Angular standalone** y **Capacitor**. **Supabase** proporciona autenticación, persistencia, almacenamiento y actualizaciones en tiempo real; **Firebase Cloud Messaging (FCM)** se utiliza para las notificaciones push en Android.
 
 > **Estado del aprovisionamiento:** el repositorio contiene la aplicación, la configuración de Supabase CLI y una Edge Function, pero no contiene migraciones SQL, scripts de creación de tablas ni políticas RLS. Para un proyecto Supabase nuevo, el esquema y sus políticas deben crearse antes de que funcionen las operaciones de datos. Este README describe el contrato que utiliza el código; no sustituye los scripts SQL que aún no están versionados.
