@@ -286,29 +286,38 @@ El proyecto no documenta una configuración de firma de producción; `assembleDe
 
 ## Capturas de pantalla
 
-### Inicio de sesi?n
-
-![Pantalla de inicio de sesi?n](docs/capturas/inicio-sesion.jpeg)
-
-### Inicio
-
-![Pantalla de inicio](docs/capturas/inicio.jpeg)
-
-### Conversaciones
-
-![Lista de conversaciones](docs/capturas/conversaciones.jpeg)
-
-### Chat
-
-![P?gina de chat](docs/capturas/pagina-chat.jpeg)
-
-### Sala de chat
-
-![Sala de chat](docs/capturas/sala-chat.jpeg)
-
-### Perfil y configuraci?n
-
-![Perfil y configuraci?n](docs/capturas/perfil-configuracion.jpeg)
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <strong>Inicio de sesión</strong><br><br>
+      <img src="docs/capturas/inicio-sesion.jpeg" alt="Pantalla de inicio de sesión" width="280">
+    </td>
+    <td align="center" width="50%">
+      <strong>Inicio</strong><br><br>
+      <img src="docs/capturas/inicio.jpeg" alt="Pantalla de inicio" width="280">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <strong>Conversaciones</strong><br><br>
+      <img src="docs/capturas/conversaciones.jpeg" alt="Lista de conversaciones" width="280">
+    </td>
+    <td align="center" width="50%">
+      <strong>Chat</strong><br><br>
+      <img src="docs/capturas/pagina-chat.jpeg" alt="Página de chat" width="280">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <strong>Sala de chat</strong><br><br>
+      <img src="docs/capturas/sala-chat.jpeg" alt="Sala de chat" width="280">
+    </td>
+    <td align="center" width="50%">
+      <strong>Perfil y configuración</strong><br><br>
+      <img src="docs/capturas/perfil-configuracion.jpeg" alt="Perfil y configuración" width="280">
+    </td>
+  </tr>
+</table>
 
 ## Autores y contexto académico
 
